@@ -16,6 +16,7 @@ import { WineCap } from './collections/WineCap'
 import { ProductCategory } from './collections/ProductCategory'
 import { Orders } from './collections/Orders'
 import { Coupons } from './collections/Coupons'
+import { viteBundler } from '@payloadcms/bundler-vite'
 
 
 export default buildConfig({
@@ -30,7 +31,7 @@ export default buildConfig({
             ...config.resolve,
             fallback: {
               ...config.resolve.fallback,
-              "stream": false,
+              "stream": require.resolve("stream-browserify"),
               "util": false,
             },
           },
