@@ -58,6 +58,7 @@ export default buildConfig({
       collections: ['pages'],
       tabbedUI: true,
     }),
+    
   ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
