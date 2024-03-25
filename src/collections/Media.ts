@@ -25,7 +25,7 @@ export const Media: CollectionConfig = {
   fields: [
     {
       name: 'alt',
-      label: 'Кратко описание (за снимка)',
+      label: 'Кратко описание (за снимки)',
       type: 'text',
     },
   ],
