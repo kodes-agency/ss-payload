@@ -97,12 +97,16 @@ export const Products: CollectionConfig = {
                         label: "Позиция на продукта",
                         options: [
                           {
-                            label: "Каталог + Магазин",
-                            value: "catalog-shop",
+                            label: "Каталог",
+                            value: "catalog-only",
                           },
                           {
                             label: "Магазин",
                             value: "shop-only",
+                          },
+                          {
+                            label: "Каталог + Магазин",
+                            value: "catalog-shop",
                           }
                         ]
                       },

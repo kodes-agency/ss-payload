@@ -158,6 +158,24 @@ export const General: GlobalConfig = {
             }
           ],
         },
+        {
+          type: "array",
+          name: "paymentLogos",
+          label: "Лого на плащане",
+          labels: {
+            singular: "Лого",
+            plural: "Логa",
+          },
+          fields: [
+            {
+              type: "upload",
+              name: "logo",
+              label: "Лого",
+              relationTo: "media",
+              required: true,
+            },
+          ],
+        }
       ],
     },
     {
@@ -1353,6 +1371,204 @@ export const General: GlobalConfig = {
                   label: 'Бутон - към начало',
                   localized: true,
                   required: true,
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'group',
+      name: 'cookieBanner',
+      label: 'Банер за бисквитки',
+      fields: [
+        {
+          type: 'collapsible',
+          label: 'Полета на банера',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'heading',
+                  label: 'Заглавие',
+                  localized: true,
+                },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'description',
+                  label: 'Описание',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'buttonAccept',
+                  label: 'Бутон - приемам',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'buttonReject',
+                  label: 'Бутон - отхвърлям',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'buttonSettings',
+                  label: 'Бутон - настройки',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'buttonClose',
+                  label: 'Бутон - затвори',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'necessaryLabel',
+                  label: 'Заглавие за необходимите бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'necessaryDescription',
+                  label: 'Описание за необходимите бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'trackingLabel',
+                  label: 'Заглавие за проследяващите бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'trackingDescription',
+                  label: 'Описание за проследяващите бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'analyticLabel',
+                  label: 'Заглавие за анализиращите бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'analyticDescription',
+                  label: 'Описание за анализиращите бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'marketingLabel',
+                  label: 'Заглавие за маркетинг бисквитки',
+                  localized: true,
+                },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'marketingDescription',
+                  label: 'Описание за маркетинг бисквитки',
+                  localized: true,
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'group',
+      name: 'ageVerification',
+      label: 'Възрастова верификация',
+      fields: [
+        {
+          type: 'collapsible',
+          label: 'Полета за верификацията',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'title',
+                  label: 'Заглавие',
+                  localized: true,
+                },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'subtitle',
+                  label: 'Описание',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'buttonAccept',
+                  label: 'Бутон - приемам',
+                  localized: true,
+                },
+                {
+                  type: 'text',
+                  admin: {
+                    width: '25%',
+                  },
+                  name: 'buttonReject',
+                  label: 'Бутон - отхвърлям',
+                  localized: true,
                 },
               ]
             }

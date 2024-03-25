@@ -342,19 +342,19 @@ export const Orders: CollectionConfig = {
             },
           ],
         },
-        {
-          type: "collapsible",
-          label: "Код за отстъпка",
-          fields: [
-            {
-              type: "relationship",
-              name: "coupons",
-              label: "Кодове",
-              relationTo: "coupons",
-              hasMany: true,
-            },
-          ],
-        },
+        // {
+        //   type: "collapsible",
+        //   label: "Код за отстъпка",
+        //   fields: [
+        //     {
+        //       type: "relationship",
+        //       name: "coupons",
+        //       label: "Кодове",
+        //       relationTo: "coupons",
+        //       hasMany: true,
+        //     },
+        //   ],
+        // },
       ]
     }
   ],

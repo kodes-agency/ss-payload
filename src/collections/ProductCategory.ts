@@ -8,7 +8,6 @@ export const ProductCategory: CollectionConfig = {
     read: () => true,
     update: ({req: {user}}) => user && user.role === 'admin',
     delete: ({req: {user}}) => user && user.role === 'admin',
-    
   },
   admin: {
     useAsTitle: 'label',

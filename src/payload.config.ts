@@ -11,12 +11,12 @@ import { Products } from './collections/Products'
 import { News } from './collections/News'
 import { Diary } from './collections/Diary'
 import { General } from './globals/General'
-import { WineType } from './collections/WineType'
-import { WineCap } from './collections/WineCap'
-import { ProductCategory } from './collections/ProductCategory'
 import { Orders } from './collections/Orders'
-import { Coupons } from './collections/Coupons'
-import { viteBundler } from '@payloadcms/bundler-vite'
+// import { WineType } from './collections/WineType'
+// import { WineCap } from './collections/WineCap'
+// import { ProductCategory } from './collections/ProductCategory'
+// import { Coupons } from './collections/Coupons'
+// import { viteBundler } from '@payloadcms/bundler-vite'
 
 
 export default buildConfig({
@@ -39,7 +39,7 @@ export default buildConfig({
       },
   },
   editor: lexicalEditor(),
-  collections: [Users, Pages, Media, Products, News, Diary, WineType, WineCap, ProductCategory, Orders, Coupons],
+  collections: [Users, Pages, Media, Products, News, Diary, Orders],
   globals: [General],
   localization: {
     locales: ['bg', 'en', 'de'],
