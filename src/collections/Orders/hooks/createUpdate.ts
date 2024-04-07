@@ -11,6 +11,8 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
         version: "wc/v3",
     })
 
+    console.log(data)
+
     const lineItemsPromises = data.products.map(async (product) => {
 
         let total
@@ -26,6 +28,8 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
                 id: {in : product.product}
             }
         })
+
+        console.log(productId)
         return {
             product_id: Number(productId.docs[0].productId),
             id: product.product_key,
@@ -43,19 +47,19 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
     
     const lineItems = await Promise.all(lineItemsPromises);
 
-    const lineCouponsPromises = data.coupons.map(async (coupon) => {
-        const couponId = await req.payload.find({
-            collection: "coupons",
-            where: {
-                id: {in : coupon}
-            }
-        })
-        return {
-            code: couponId.docs[0].code
-        }   
-    })
+    // const lineCouponsPromises = data.coupons.map(async (coupon) => {
+    //     const couponId = await req.payload.find({
+    //         collection: "coupons",
+    //         where: {
+    //             id: {in : coupon}
+    //         }
+    //     })
+    //     return {
+    //         code: couponId.docs[0].code
+    //     }   
+    // })
 
-    const lineCoupons = await Promise.all(lineCouponsPromises);
+    // const lineCoupons = await Promise.all(lineCouponsPromises);
 
     const order = {
         status: data.status,
@@ -82,7 +86,7 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
             country: data?.country,
         },
         line_items: lineItems,
-        coupon_lines: lineCoupons,
+        // coupon_lines: lineCoupons,
         payment_method: "cod",
         transaction_id: data.transaction_id,
         // Set up to true if there was a succefssful card payment

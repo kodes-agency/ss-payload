@@ -14,11 +14,7 @@ export interface Config {
     products: Product;
     news: News;
     diary: Diary;
-    wineType: WineType;
-    wineCap: WineCap;
-    productCategory: ProductCategory;
     orders: Order;
-    coupons: Coupon;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -227,7 +223,7 @@ export interface Product {
   systemTitle?: string | null;
   productType: {
     productType: 'single' | 'bundle' | 'other';
-    productPosition: 'catalog-shop' | 'shop-only';
+    productPosition: 'catalog-only' | 'shop-only' | 'catalog-shop';
   };
   productTitle: string;
   productKind: 'bottle' | 'bundle' | 'special' | 'other';
@@ -369,39 +365,6 @@ export interface Diary {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "wineType".
- */
-export interface WineType {
-  id: string;
-  label: string;
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "wineCap".
- */
-export interface WineCap {
-  id: string;
-  label: string;
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "productCategory".
- */
-export interface ProductCategory {
-  id: string;
-  label: string;
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders".
  */
 export interface Order {
@@ -482,26 +445,9 @@ export interface Order {
   payment_method_title?: string | null;
   transaction_id?: string | null;
   date_paid?: string | null;
-  coupons?: (string | Coupon)[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coupons".
- */
-export interface Coupon {
-  id: string;
-  code: string;
-  amount: number;
-  discount_type: 'percent' | 'fixed_cart';
-  couponId?: number | null;
-  date_expires?: string | null;
-  product_ids?: (string | Product)[] | null;
-  minimum_amount?: number | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -578,6 +524,12 @@ export interface General {
           text: string;
           url?: string | null;
           icon: string;
+          id?: string | null;
+        }[]
+      | null;
+    paymentLogos?:
+      | {
+          logo: string | Media;
           id?: string | null;
         }[]
       | null;
@@ -694,6 +646,28 @@ export interface General {
     orderDetails: string;
     clientDetails: string;
     buttonBackToHome: string;
+  };
+  cookieBanner?: {
+    heading?: string | null;
+    description?: string | null;
+    buttonAccept?: string | null;
+    buttonReject?: string | null;
+    buttonSettings?: string | null;
+    buttonClose?: string | null;
+    necessaryLabel?: string | null;
+    necessaryDescription?: string | null;
+    trackingLabel?: string | null;
+    trackingDescription?: string | null;
+    analyticLabel?: string | null;
+    analyticDescription?: string | null;
+    marketingLabel?: string | null;
+    marketingDescription?: string | null;
+  };
+  ageVerification?: {
+    title?: string | null;
+    subtitle?: string | null;
+    buttonAccept?: string | null;
+    buttonReject?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;

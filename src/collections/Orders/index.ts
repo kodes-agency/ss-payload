@@ -20,6 +20,12 @@ export const Orders: CollectionConfig = {
   versions: {
     drafts: true,
   },
+  access: {
+    create: ({ req }) => req.user && req.user.role === "admin" || req.user.role === "editor",
+    read: ({ req }) => req.user && req.user.role === "admin" || req.user.role === "editor",
+    update: ({ req }) => req.user && req.user.role === "admin" || req.user.role === "editor",
+    delete: ({ req }) => req.user && req.user.role === "admin" || req.user.role === "editor",
+  },
   hooks: {
     beforeChange: [createUpdateOrder],
     beforeDelete: [deleteOrder],
@@ -220,6 +226,7 @@ export const Orders: CollectionConfig = {
               name: "product",
               label: "Продукт",
               relationTo: "products",
+              unique: false,
               required: true,
               filterOptions: () => {
                 return {
@@ -227,7 +234,6 @@ export const Orders: CollectionConfig = {
                 }
               },
               admin: {
-                
                 width: "40%",
               },
             },

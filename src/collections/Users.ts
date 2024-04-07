@@ -14,6 +14,7 @@ const Users: CollectionConfig = {
   },
   auth: {
     maxLoginAttempts: 10,
+    useAPIKey: true,
     lockTime: 600000,
   },
   admin: {

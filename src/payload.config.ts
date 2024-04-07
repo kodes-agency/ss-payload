@@ -12,6 +12,7 @@ import { News } from './collections/News'
 import { Diary } from './collections/Diary'
 import { General } from './globals/General'
 import { Orders } from './collections/Orders'
+import { Messages } from './collections/Messages'
 // import { WineType } from './collections/WineType'
 // import { WineCap } from './collections/WineCap'
 // import { ProductCategory } from './collections/ProductCategory'
@@ -39,7 +40,7 @@ export default buildConfig({
       },
   },
   editor: lexicalEditor(),
-  collections: [Users, Pages, Media, Products, News, Diary, Orders],
+  collections: [ Orders, Products, Pages, News, Diary, Media , Messages, Users],
   globals: [General],
   localization: {
     locales: ['bg', 'en', 'de'],

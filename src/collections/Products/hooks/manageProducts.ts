@@ -21,6 +21,7 @@ export const manageProducts: BeforeOperationHook = async ({
           : "В изчакване на заглавие на български език",
       type: "simple",
       status: data?.visibilityGroup?.visibility === "1" ? "publish" : "draft",
+      description: id,
       sku: data?.stockManagement?.sku || "",
       regular_price: data.priceManagement.regularPrice ? data.priceManagement.regularPrice.toString() : null,
       sale_price:
@@ -52,6 +53,7 @@ export const manageProducts: BeforeOperationHook = async ({
       name: locale === "bg" ? `${data?.productTitle} ${data?.productBasicInformation?.harvestYear ? new Date(data?.productBasicInformation?.harvestYear).getFullYear() : ""} ${data?.stockManagement?.volume === "0" ? "" : data?.stockManagement?.volume}` : null,
       type: "simple",
       status: data?.visibilityGroup?.visibility === "1" ? "publish" : "draft",
+      description: id,
       sku: data?.stockManagement?.sku || "",
       regular_price: data.priceManagement.regularPrice ? data.priceManagement.regularPrice.toString() : null,
       sale_price:
