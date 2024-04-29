@@ -49,8 +49,17 @@ export const manageProducts: BeforeOperationHook = async ({
   }
 
   if (operation === "update") {
+
+    let name = await payload.find({
+      collection: "products",
+      where: {
+        id: { equals: id },
+        locale: 'bg'
+      },
+    });
+    
     const product = {
-      name: locale === "bg" ? `${data?.productTitle} ${data?.productBasicInformation?.harvestYear ? new Date(data?.productBasicInformation?.harvestYear).getFullYear() : ""} ${data?.stockManagement?.volume === "0" ? "" : data?.stockManagement?.volume}` : null,
+      name: `${name.docs[0].productTitle} ${data?.productBasicInformation?.harvestYear ? new Date(data?.productBasicInformation?.harvestYear).getFullYear() : ""} ${data?.stockManagement?.volume === "0" ? "" : data?.stockManagement?.volume}`,
       type: "simple",
       status: data?.visibilityGroup?.visibility === "1" ? "publish" : "draft",
       description: id,
@@ -66,6 +75,8 @@ export const manageProducts: BeforeOperationHook = async ({
           ? data?.stockManagement?.stockQuantity
           : null,
     };
+
+    console.log(name)
 
     if (!data?.productId) {
       await WooCommerce.post("products", product)
