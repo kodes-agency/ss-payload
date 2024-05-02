@@ -31,8 +31,10 @@ app.use(bodyParser.json());
 app.post('/order', (req, res) => {
   const order = req.body;
   // Process the order here
-  if(req.headers.host === 'localhost:3000') {
+  console.log(order);
+  if(req.headers.host === 'localhost:3001' || req.headers.host === 'ss.kodes.agency') {
     console.log(req);
+    console.log("Right host")
   } else {
     console.log('Wrong host')
   }
