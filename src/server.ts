@@ -1,5 +1,6 @@
 import express from 'express'
 import payload from 'payload'
+import bodyParser from 'body-parser'
 
 require('dotenv').config()
 const app = express()
@@ -25,3 +26,15 @@ const start = async () => {
 }
 
 start()
+
+app.use(bodyParser.json());
+app.post('/order', (req, res) => {
+  const order = req.body;
+  // Process the order here
+  if(req.headers.host === 'localhost:3000') {
+    console.log(req);
+  } else {
+    console.log('Wrong host')
+  }
+  res.status(200).end();
+});
