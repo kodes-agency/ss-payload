@@ -1,9 +1,9 @@
 import type { CollectionConfig } from "payload/types";
-import { createUpdateOrder } from "./hooks/createUpdate";
 import { Country } from "../../fields/country";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 import CustomAdminError from "../../utilities/errorClasses";
 import { deleteOrder } from "./hooks/delete";
+import { manageOrders } from "./hooks/manageOrders";
 
 
 
@@ -27,8 +27,8 @@ export const Orders: CollectionConfig = {
     delete: ({ req }) => req.user && req.user.role === "admin" || req.user.role === "editor",
   },
   hooks: {
-    beforeChange: [createUpdateOrder],
     beforeDelete: [deleteOrder],
+    beforeOperation: [manageOrders]
   },
   fields: [
     {

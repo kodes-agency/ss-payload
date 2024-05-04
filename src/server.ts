@@ -28,16 +28,60 @@ const start = async () => {
 start()
 
 app.use(bodyParser.json());
-app.post('/order', (req, res) => {
-  const order = req.body;
-  // Process the order here
-  console.log(req.headers.host)
-  console.log(order);
-  if(req.headers.host === 'localhost:3001' || req.headers.host === 'ss.kodes.agency') {
-    console.log(req);
-    console.log("Right host")
-  } else {
-    console.log('Wrong host')
-  }
+app.post('/order', async (req, res) => {
+  console.log(req)
+
+  const order = await req.body;
+
+  let existingOrder = await payload.find({
+    collection: 'orders',
+    where: {
+      orderId: {
+        equals: order.id
+      }
+    }
+  })
+
+  console.log(existingOrder)
+
+  if(existingOrder.docs.length > 0) return
+
+  const products = order.line_items.map(async (product) => {
+    const productIds = await payload.find({
+      collection: 'products',
+      where: {
+        id: {
+          equals: product.id
+        }
+      }
+    })
+
+    return {
+      product: productIds.docs[0].id,
+      quantity: product.quantity,
+      price: product.price,
+      total: product.total,
+      product_key: product.id
+    }
+  })
+  
+  await payload.create({
+    collection: 'orders',
+    data: {
+      orderId: order.id,
+      first_name: order.billing.first_name,
+      last_name: order.billing.last_name,
+      email: order.billing.email,
+      phone: order.billing.phone,
+      address_1: order.billing.address_1,
+      country: order.billing.country,
+      city: order.billing.city,
+      products: await Promise.all(products),
+      status: order.status,
+      orderTotal: order.total,
+      customer_note: order.customer_note
+    }
+  })
+
   res.status(200).end();
 });

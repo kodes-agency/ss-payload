@@ -1,9 +1,12 @@
-import { CollectionBeforeChangeHook } from "payload/types";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 import CustomAdminError from "../../../utilities/errorClasses";
+import { BeforeOperationHook } from "payload/dist/collections/config/types";
 
 
-export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, operation, req }) => {
+export const manageOrders: BeforeOperationHook = async ({
+    args: { data, id, req, req: {locale, payload}},
+    operation,
+  }) => {
     const WooCommerce = await new WooCommerceRestApi({
         url: process.env.PAYLOAD_PUBLIC_WOO_URL,
         consumerKey: process.env.PAYLOAD_PUBLIC_WOO_CONSUMER_KEY,
@@ -11,9 +14,30 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
         version: "wc/v3",
     })
 
-    console.log(data)
+    console.log(req)
 
-    const lineItemsPromises = data.products.map(async (product) => {
+
+
+    // const lineCouponsPromises = data.coupons.map(async (coupon) => {
+    //     const couponId = await req.payload.find({
+    //         collection: "coupons",
+    //         where: {
+    //             id: {in : coupon}
+    //         }
+    //     })
+    //     return {
+    //         code: couponId.docs[0].code
+    //     }   
+    // })
+
+    // const lineCoupons = await Promise.all(lineCouponsPromises);
+
+     
+
+    if (operation === "create") {
+      console.log("Creating order");
+
+      const lineItemsPromises = data.products.map(async (product) => {
 
         let total
         if(product.total){
@@ -22,7 +46,7 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
             total = product.price * product.quantity.toString()
         }
 
-        const productId = await req.payload.find({
+        const productId = await payload.find({
             collection: "products",
             where: {
                 id: {in : product.product}
@@ -46,20 +70,6 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
     })
     
     const lineItems = await Promise.all(lineItemsPromises);
-
-    // const lineCouponsPromises = data.coupons.map(async (coupon) => {
-    //     const couponId = await req.payload.find({
-    //         collection: "coupons",
-    //         where: {
-    //             id: {in : coupon}
-    //         }
-    //     })
-    //     return {
-    //         code: couponId.docs[0].code
-    //     }   
-    // })
-
-    // const lineCoupons = await Promise.all(lineCouponsPromises);
 
     const order = {
         status: data.status,
@@ -92,10 +102,7 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
         // Set up to true if there was a succefssful card payment
         set_paid: false,
     }
-     
 
-    if (operation === "create") {
-      console.log("Creating order");
         await WooCommerce.post("orders", order)
         .then((response) => {
             data.orderId = response.data?.id;
@@ -120,27 +127,27 @@ export const createUpdateOrder: CollectionBeforeChangeHook = async ({ data, oper
         return data
     }
 
-    if (operation === "update") {
-      console.log("Updating order");
-        await WooCommerce.put(`orders/${data.orderId}`, order)
-        .then((response) => {
-            console.log(response.data.line_items)
-            data.orderTotal = response.data?.total  + " лв.";
-            data.products = data.products.map((product) => {
-                const lineItem = response.data.line_items.find((lineItem) => lineItem.meta_data[0].value == product.product)
-                return {
-                    ...product,
-                    sku: lineItem.sku,
-                    price: lineItem.price,
-                    price_readOnly: lineItem.price,
-                    total: lineItem.total,
-                    product_key: lineItem.id
-                }
-            })
-        })
-        .catch((error) => {
-            throw new CustomAdminError(error.response?.data?.message, error.response?.data?.data?.status)
-        })
-    }
+    // if (operation === "update") {
+    //   console.log("Updating order");
+    //     await WooCommerce.put(`orders/${data.orderId}`, order)
+    //     .then((response) => {
+    //         console.log(response.data.line_items)
+    //         data.orderTotal = response.data?.total  + " лв.";
+    //         data.products = data.products.map((product) => {
+    //             const lineItem = response.data.line_items.find((lineItem) => lineItem.meta_data[0].value == product.product)
+    //             return {
+    //                 ...product,
+    //                 sku: lineItem.sku,
+    //                 price: lineItem.price,
+    //                 price_readOnly: lineItem.price,
+    //                 total: lineItem.total,
+    //                 product_key: lineItem.id
+    //             }
+    //         })
+    //     })
+    //     .catch((error) => {
+    //         throw new CustomAdminError(error.response?.data?.message, error.response?.data?.data?.status)
+    //     })
+    // }
 };
  
