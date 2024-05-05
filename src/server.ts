@@ -28,62 +28,80 @@ const start = async () => {
 start()
 
 app.use(bodyParser.json());
+// Handle POST request to '/order'
 app.post('/order', async (req, res) => {
-  // const source = req.headers['x-wc-webhook-source'];
-  // if(source !== 'https://ss.kodes.agency/') return res.status(401).end();
+  try {
+    // Check if the request is coming from the expected source
+    // const source = req.headers['x-wc-webhook-source'];
+    // if(source !== 'https://ss.kodes.agency/') return res.status(401).end();
 
-  const order = await req.body;
-  console.log(order)
+    // Extract the order data from the request body
+    const { body: order } = req;
 
-  let existingOrder = await payload.find({
-    collection: 'orders',
-    where: {
-      orderId: {
-        equals: order.id
-      }
+    // Validate the order data
+    if (!order || typeof order !== 'object') {
+      throw new Error('Invalid order data');
     }
-  })
 
-  console.log(existingOrder)
+    // Check if the order already exists in the 'orders' collection
+    const existingOrder = await payload.find({
+      collection: 'orders',
+      where: {
+        orderId: {
+          equals: order.id
+        }
+      }
+    });
 
-  // if(existingOrder.docs.length > 0) return
+    // If the order already exists, log a message and return a success response
+    if (existingOrder.docs.length > 0) {
+      console.log('Order already exists');
+      return res.status(200).end();
+    }
 
-  // const products = order.line_items.map(async (product) => {
-  //   const productIds = await payload.find({
-  //     collection: 'products',
-  //     where: {
-  //       id: {
-  //         equals: product.id
-  //       }
-  //     }
-  //   })
+    // Map over the line items of the order and fetch the corresponding products from the 'products' collection
+    const products = await Promise.all(order.line_items.map(async (product) => {
+      const productObj = await payload.find({
+        collection: 'products',
+        where: {
+          productId: {
+            equals: product.product_id
+          }
+        }
+      });
 
-  //   return {
-  //     product: productIds.docs[0].id,
-  //     quantity: product.quantity,
-  //     price: product.price,
-  //     total: product.total,
-  //     product_key: product.id
-  //   }
-  // })
-  
-  // await payload.create({
-  //   collection: 'orders',
-  //   data: {
-  //     orderId: order.id,
-  //     first_name: order.billing.first_name,
-  //     last_name: order.billing.last_name,
-  //     email: order.billing.email,
-  //     phone: order.billing.phone,
-  //     address_1: order.billing.address_1,
-  //     country: order.billing.country,
-  //     city: order.billing.city,
-  //     products: await Promise.all(products),
-  //     status: order.status,
-  //     orderTotal: order.total,
-  //     customer_note: order.customer_note
-  //   }
-  // })
+      // Return an object containing the product details
+      return {
+        product: productObj.docs[0].id,
+        quantity: product.quantity,
+        price: product.price,
+        total: product.total,
+      };
+    }));
 
-  // res.status(200).end();
+    // Create a new document in the 'orders' collection with the order details and associated products
+    await payload.create({
+      collection: 'orders',
+      data: {
+        orderId: order.id,
+        first_name: order.billing.first_name,
+        last_name: order.billing.last_name,
+        email: order.billing.email,
+        phone: order.billing.phone,
+        address_1: order.billing.address_1,
+        country: order.billing.country,
+        city: order.billing.city,
+        status: order.status,
+        orderTotal: order.total,
+        customer_note: order.customer_note,
+        products: products
+      }
+    });
+
+    // Return a success response
+    return res.status(200).end();
+  } catch (error) {
+    console.error('Error processing order:', error);
+    return res.status(500).end();
+  }
 });
