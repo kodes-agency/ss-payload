@@ -88,8 +88,6 @@ export const manageProducts: BeforeOperationHook = async ({
       ]
     };
 
-    console.log(name)
-
     if (!data?.productId) {
       await WooCommerce.post("products", product)
         .then((response) => {

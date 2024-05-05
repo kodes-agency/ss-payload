@@ -33,6 +33,7 @@ app.post('/order', async (req, res) => {
   // if(source !== 'https://ss.kodes.agency/') return res.status(401).end();
 
   const order = await req.body;
+  console.log(order)
 
   let existingOrder = await payload.find({
     collection: 'orders',

@@ -14,9 +14,6 @@ export const manageOrders: BeforeOperationHook = async ({
         version: "wc/v3",
     })
 
-    console.log(req)
-
-
 
     // const lineCouponsPromises = data.coupons.map(async (coupon) => {
     //     const couponId = await req.payload.find({
@@ -53,7 +50,6 @@ export const manageOrders: BeforeOperationHook = async ({
             }
         })
 
-        console.log(productId)
         return {
             product_id: Number(productId.docs[0].productId),
             id: product.product_key,
