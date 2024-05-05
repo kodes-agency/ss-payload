@@ -33,6 +33,12 @@ export const manageProducts: BeforeOperationHook = async ({
         data?.stockGroup?.manageStock === "1"
           ? data?.stockManagement?.stockQuantity
           : null,
+      meta_data: [
+        {
+          key: "payload_id",
+          value: id
+        }
+      ]
     };
 
     await WooCommerce.post("products", product)
@@ -74,6 +80,12 @@ export const manageProducts: BeforeOperationHook = async ({
         data?.stockGroup?.manageStock === "1"
           ? data?.stockManagement?.stockQuantity
           : null,
+      meta_data: [
+        {
+          key: "payload_id",
+          value: id
+        }
+      ]
     };
 
     console.log(name)
