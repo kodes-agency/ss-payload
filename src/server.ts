@@ -36,9 +36,11 @@ app.post('/order', async (req, res) => {
     // if(source !== 'https://ss.kodes.agency/') return res.status(401).end();
 
     // Extract the order data from the request body
-    const { body: order } = req;
-
+    console.log("Data received")
+    const order = req.body;
+  
     // Validate the order data
+
     if (!order || typeof order !== 'object') {
       throw new Error('Invalid order data');
     }
@@ -60,6 +62,7 @@ app.post('/order', async (req, res) => {
     }
 
     // Map over the line items of the order and fetch the corresponding products from the 'products' collection
+    console.log("Order being created")
     const products = await Promise.all(order.line_items.map(async (product) => {
       const productObj = await payload.find({
         collection: 'products',
@@ -80,6 +83,7 @@ app.post('/order', async (req, res) => {
     }));
 
     // Create a new document in the 'orders' collection with the order details and associated products
+    console.log("Order created")
     await payload.create({
       collection: 'orders',
       data: {
