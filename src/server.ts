@@ -77,8 +77,9 @@ app.post('/order', async (req, res) => {
       return {
         product: productObj.docs[0].id,
         quantity: product.quantity,
-        price: product.price,
+        price: Number(product.price),
         total: product.total,
+        product_key: product.product_id
       };
     }));
 
