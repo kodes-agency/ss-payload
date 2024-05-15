@@ -108,6 +108,14 @@ export const CardPayments: CollectionConfig = {
           ],
         },
         {
+          type: "text",
+          name: "STATUSMSG",
+          label: "Съобщение за статус",
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
             type: 'row',
             fields: [
                 {
