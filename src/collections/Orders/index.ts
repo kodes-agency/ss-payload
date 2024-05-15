@@ -57,7 +57,7 @@ export const Orders: CollectionConfig = {
           admin: {
             readOnly: true,
             date: {
-              displayFormat: "d MMM yyy hh:mm",
+              displayFormat: "d MMM yyy",
             }
           },
         },
@@ -322,21 +322,14 @@ export const Orders: CollectionConfig = {
                   },
                 },
                 {
-                  type: "text",
-                  name: "transaction_id",
-                  label: "Транцацкион №",
+                  type: "relationship",
+                  name: "transaction",
+                  label: "Транзакция",
+                  relationTo: "payments",
                   admin: {
                     readOnly: true,
                   },
-                },
-                {
-                  type: "date",
-                  name: "date_paid",
-                  label: "Дата на плащане",
-                  admin: {
-                    readOnly: true,
-                  },
-                },
+                }
               ],
             },
           ],
