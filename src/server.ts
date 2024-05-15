@@ -104,7 +104,7 @@ app.post('/order', async (req, res) => {
         status: order.status,
         orderTotal: order.total,
         customer_note: order.customer_note,
-        payment_method_title: order.payment_method_title,
+        payment_method_title: order.payment_method === 'cod' ? 'Наложен платеж' : 'Картово плащане',
         products: products
       }
     });
