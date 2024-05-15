@@ -250,7 +250,7 @@ export const Orders: CollectionConfig = {
               name: "price_readOnly",
               label: "Ед. цена",
               admin: {
-                hidden: true,
+                readOnly: true,
                 condition: (data, siblingData ) => {
                   return !siblingData.isDiscounted
                 },
@@ -293,7 +293,6 @@ export const Orders: CollectionConfig = {
           label: 'ID',
           admin: {
             readOnly: true,
-            hidden: true,
           },
           }
       ],

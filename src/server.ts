@@ -81,7 +81,7 @@ app.post('/order', async (req, res) => {
         price_readOnly: Number(product.price),
         price: Number(product.price),
         total: product.total,
-        product_key: product.product_id
+        product_key: product.id
       };
     }));
 
