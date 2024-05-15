@@ -428,6 +428,7 @@ export interface Order {
   state?: string | null;
   city: string;
   address_1: string;
+  address_2: string | null;
   postcode?: string | null;
   products?:
     | {

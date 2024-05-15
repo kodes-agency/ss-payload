@@ -161,7 +161,7 @@ export const Orders: CollectionConfig = {
             },
             {
               type: "textarea",
-              name: "company",
+              name: "address_2",
               label: "Фирма",
             }
           ],

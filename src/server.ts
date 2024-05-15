@@ -97,7 +97,7 @@ app.post('/order', async (req, res) => {
         email: order.billing.email,
         phone: order.billing.phone,
         address_1: order.billing.address_1,
-        company: order.billing.address_2,
+        address_2: order.billing.address_2,
         country: order.billing.country,
         postcode: order.billing.postcode,
         city: order.billing.city,
