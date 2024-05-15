@@ -57,7 +57,7 @@ export const Orders: CollectionConfig = {
           admin: {
             readOnly: true,
             date: {
-              displayFormat: "d MMM yyy",
+              displayFormat: "d MMM yyy hh:mm",
             }
           },
         },
@@ -298,6 +298,7 @@ export const Orders: CollectionConfig = {
           label: 'ID',
           admin: {
             readOnly: true,
+            hidden: true,
           },
           }
       ],
