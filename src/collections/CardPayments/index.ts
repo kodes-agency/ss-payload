@@ -24,7 +24,7 @@ export const CardPayments: CollectionConfig = {
       fields: [
         {
           type: "select",
-          name: "action",
+          name: "ACTION",
           label: "Статус",
           options: [
             {
