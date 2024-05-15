@@ -40,7 +40,6 @@ export const Orders: CollectionConfig = {
           label: "Обща сума",
           admin: {
             readOnly: true,
-            
           },
         },
         {
@@ -140,14 +139,14 @@ export const Orders: CollectionConfig = {
             Country,
             {
               type: "text",
-              name: "state",
-              label: "Област",
-            },
-            {
-              type: "text",
               name: "city",
               label: "Град",
               required: true,
+            },
+            {
+              type: "text",
+              name: "postcode",
+              label: "Пощенски код",
             },
           ],
         },
@@ -159,17 +158,6 @@ export const Orders: CollectionConfig = {
               name: "address_1",
               label: "Адрес",
               required: true,
-              admin: {
-                width: "70%",
-              },
-            },
-            {
-              type: "text",
-              name: "postcode",
-              label: "Пощенски код",
-              admin: {
-                width: "30%",
-              },
             },
           ],
         },
@@ -262,7 +250,7 @@ export const Orders: CollectionConfig = {
               name: "price_readOnly",
               label: "Ед. цена",
               admin: {
-                readOnly: true,
+                hidden: true,
                 condition: (data, siblingData ) => {
                   return !siblingData.isDiscounted
                 },

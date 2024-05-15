@@ -76,7 +76,9 @@ app.post('/order', async (req, res) => {
       // Return an object containing the product details
       return {
         product: productObj.docs[0].id,
+        sku: product.sku,
         quantity: product.quantity,
+        price_readOnly: Number(product.price),
         price: Number(product.price),
         total: product.total,
         product_key: product.product_id
@@ -90,11 +92,13 @@ app.post('/order', async (req, res) => {
       data: {
         orderId: order.id,
         first_name: order.billing.first_name,
+        orderDate: order.date_created,
         last_name: order.billing.last_name,
         email: order.billing.email,
         phone: order.billing.phone,
         address_1: order.billing.address_1,
         country: order.billing.country,
+        postcode: order.billing.postcode,
         city: order.billing.city,
         status: order.status,
         orderTotal: order.total,

@@ -123,7 +123,7 @@ export const manageOrders: BeforeOperationHook = async ({
         return
     }
 
-    if (operation === "update"  && req.payloadAPI === "REST") {
+    if (operation === "update" && req.payloadAPI === "REST") {
       const lineItemsPromises = data.products.map(async (product) => {
 
         let total
