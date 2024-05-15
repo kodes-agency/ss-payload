@@ -159,6 +159,11 @@ export const Orders: CollectionConfig = {
               label: "Адрес",
               required: true,
             },
+            {
+              type: "textarea",
+              name: "company",
+              label: "Фирма",
+            }
           ],
         },
       ],
