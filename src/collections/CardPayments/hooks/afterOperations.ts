@@ -108,7 +108,7 @@ async function getTransactionData(result: any) {
         };
 
         // Start the interval
-        intervalId = setInterval(checkTransactionData, 10000);
+        intervalId = setInterval(checkTransactionData, 20000);
 
         // Clear the interval after 15 minutes (900000 milliseconds)
         setTimeout(() => {
