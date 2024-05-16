@@ -28,7 +28,7 @@ function recordTransactionData(data: any) {
 }
 
 async function getTransactionData(result: any) {
-  const TERMINAL = process.env.BORICA_TERMINAL;
+  const TERMINAL = "V2400709";
   const TRTYPE = "90";
   const ORDER = result.ORDER;
   const TRAN_TRTYPE = "1";
