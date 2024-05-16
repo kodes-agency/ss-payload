@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload/types";
+import { afterOperationHook } from "./hooks/afterOperations";
 
 // ACTION, RC, STATUSMSG, AMOUNT, CURRENCY, ORDER, LANG, TIMESTAMP, TRAN_DATE, TRAN_TRTYPE, RRN, INT_REF, PARES_STATUS, AUTH_STEP_RES, CARDHOLDERINFO, ECI, CARD, CARD_BRAND,
 
@@ -13,6 +14,9 @@ export const CardPayments: CollectionConfig = {
   labels: {
     singular: "Плащане с карта",
     plural: "Плащания с карта",
+  },
+  hooks: {
+    afterOperation: [afterOperationHook]
   },
   admin: {
     useAsTitle: "code",

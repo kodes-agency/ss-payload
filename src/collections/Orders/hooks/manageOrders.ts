@@ -93,7 +93,7 @@ export const manageOrders: BeforeOperationHook = async ({
         },
         line_items: lineItems,
         // coupon_lines: lineCoupons,
-        payment_method: "cod",
+        payment_method: "other_method",
         transaction_id: data.transaction_id,
         // Set up to true if there was a succefssful card payment
         set_paid: false,
@@ -104,7 +104,7 @@ export const manageOrders: BeforeOperationHook = async ({
             data.orderId = response.data?.id;
             data.orderTotal = response.data?.total + " лв.";
             data.orderDate = response.data?.date_created;
-            data.payment_method_title = "Наложен платеж"
+            data.payment_method_title = "Създаден от вътрешна система"
             data.products = data.products.map((product) => {
                 const lineItem = response.data.line_items.find((lineItem) => lineItem.meta_data[0].value == product.product)
                 return {
@@ -184,7 +184,7 @@ export const manageOrders: BeforeOperationHook = async ({
         },
         line_items: lineItems,
         // coupon_lines: lineCoupons,
-        payment_method: "cod",
+        payment_method: "other_method",
         transaction_id: data.transaction_id,
         // Set up to true if there was a succefssful card payment
         set_paid: false,
