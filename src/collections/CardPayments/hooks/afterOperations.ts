@@ -1,4 +1,4 @@
-import { CollectionAfterOperationHook } from "payload/types";
+import { CollectionAfterChangeHook } from "payload/types";
 import * as crypto from "crypto";
 
 const ACTION = ["0", "1", "2", "3", "7", "21"];
@@ -24,17 +24,15 @@ function recordTransactionData(data: any, result: any) {
     result.CARD_BRAND = data.CARD_BRAND
 }
 
-export const afterOperationHook: CollectionAfterOperationHook = async ({
-  args, // arguments passed into the operation
+export const afterOperationHook: CollectionAfterChangeHook = async ({
+  doc, // arguments passed into the operation
   operation, // name of the operation
-  req, // full express request
-  result, // the result of the operation, before modifications
 }) => {
 
-async function getTransactionData(result: any) {
+async function getTransactionData(doc: any) {
     const TERMINAL = process.env.BORICA_TERMINAL;
     const TRTYPE = "90";
-    const ORDER = result.ORDER;
+    const ORDER = doc.ORDER;
     const TRAN_TRTYPE = "1";
     const NONCE = crypto.randomBytes(16).toString("hex").toUpperCase(); // Формиране на сигнатура за подписване, Размер: 1-64
   
@@ -87,22 +85,22 @@ async function getTransactionData(result: any) {
   console.log("After operation hook");
 
   console.log(operation);
-  console.log(result)
+  console.log(doc)
 
-  if (operation === "create" || operation === "updateByID") {
-    const response = await getTransactionData(result);
+  if (operation === "create" || operation === "update") {
+    const response = await getTransactionData(doc);
 
     if (response.RC === "-40" || response.RC === "-24" || response.RC === "-33") {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
-            const response = await getTransactionData(result);
-            recordTransactionData(response, result);
+            const response = await getTransactionData(doc);
+            recordTransactionData(response, doc);
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
             if (response.RC !== "-40" || response.RC !== "-24" || response.RC !== "-33") {
                 clearInterval(intervalId);
                 console.log(response)
-                recordTransactionData(response, result);
+                recordTransactionData(response, doc);
                 console.log("Transaction found");
             }
         };
@@ -116,12 +114,12 @@ async function getTransactionData(result: any) {
             console.log("Interval cleared after 15 minutes");
         }, 900000);
     }  else {
-        recordTransactionData(response, result);
+        recordTransactionData(response, doc);
         console.log("Transaction is not -40 or -24 or -33");
     } 
   }
 
-  console.log(result);
+  console.log(doc);
 
-  return result
+  return doc
 };

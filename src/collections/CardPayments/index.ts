@@ -16,7 +16,7 @@ export const CardPayments: CollectionConfig = {
     plural: "Плащания с карта",
   },
   hooks: {
-    afterOperation: [afterOperationHook]
+    afterChange: [afterOperationHook]
   },
   admin: {
     useAsTitle: "code",
