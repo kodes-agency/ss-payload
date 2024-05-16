@@ -3,28 +3,25 @@ import * as crypto from "crypto";
 
 const ACTION = ["0", "1", "2", "3", "7", "21"];
 
-function recordTransactionData(data: any) {
-  let transactionData = {
-    ACTION: data.ACTION,
-    STATUSMSG: data.STATUSMSG,
-    RC: data.RC,
-    AMOUNT: data.AMOUNT,
-    CURRENCY: data.CURRENCY,
-    ORDER: data.ORDER,
-    DESC: data.DESC,
-    TIMESTAMP: data.TIMESTAMP,
-    LANG: data.LANG,
-    TRAN_TRTYPE: data.TRAN_TRTYPE,
-    RRN: data.RRN,
-    INT_REF: data.INT_REF,
-    PARES_STATUS: data.PARES_STATUS,
-    AUTH_STEP_RES: data.AUTH_STEP_RES,
-    CARDHOLDERINFO: data.CARDHOLDERINFO,
-    ECI: data.ECI,
-    CARD: data.CARD,
-    CARD_BRAND: data.CARD_BRAND,
-  };
-  return transactionData;
+function recordTransactionData(data: any, result: any) {
+    result.ACTION = data.ACTION
+    result.STATUSMSG = data.STATUSMSG
+    result.RC = data.RC
+    result.AMOUNT = data.AMOUNT
+    result.CURRENCY = data.CURRENCY
+    result.ORDER = data.ORDER
+    result. DESC = data.DESC
+    result.TIMESTAMP = data.TIMESTAMP
+    result.LANG = data.LANG
+    result.TRAN_TRTYPE = data.TRAN_TRTYPE
+    result.RRN = data.RRN
+    result.INT_REF = data.INT_REF
+    result.PARES_STATUS = data.PARES_STATUS
+    result.AUTH_STEP_RES = data.AUTH_STEP_RES
+    result.CARDHOLDERINFO = data.CARDHOLDERINFO
+    result.ECI = data.ECI
+    result.CARD = data.CARD
+    result.CARD_BRAND = data.CARD_BRAND
 }
 
 export const afterOperationHook: CollectionAfterOperationHook = async ({
@@ -95,17 +92,17 @@ async function getTransactionData(result: any) {
   if (operation === "create" || operation === "updateByID") {
     const response = await getTransactionData(result);
 
-    if (response.RC === "-40" || response.RC === "-24") {
+    if (response.RC === "-40" || response.RC === "-24" || response.RC === "-33") {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
             const response = await getTransactionData(result);
-            result = recordTransactionData(response);
+            recordTransactionData(response, result);
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
-            if (response.RC !== "-40" || response.RC === "-24") {
+            if (response.RC !== "-40" || response.RC === "-24" || response.RC === "-33") {
                 clearInterval(intervalId);
                 console.log(response)
-                result = recordTransactionData(response);
+                recordTransactionData(response, result);
                 console.log("Transaction found");
             }
         };
@@ -119,8 +116,8 @@ async function getTransactionData(result: any) {
             console.log("Interval cleared after 15 minutes");
         }, 900000);
     }  else {
-        result = recordTransactionData(response);
-        console.log("Transaction is not -40 or -24");
+        recordTransactionData(response, result);
+        console.log("Transaction is not -40 or -24 or -33");
     } 
   }
 
