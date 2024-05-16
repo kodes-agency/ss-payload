@@ -192,7 +192,6 @@ export const manageOrders: BeforeOperationHook = async ({
       console.log("Updating order");
         await WooCommerce.put(`orders/${data.orderId}`, order)
         .then((response) => {
-            console.log(response.data.line_items)
             data.orderTotal = response.data?.total  + " лв.";
             data.products = data.products.map((product) => {
                 const lineItem = response.data.line_items.find((lineItem) => lineItem.meta_data[0].value == product.product)
