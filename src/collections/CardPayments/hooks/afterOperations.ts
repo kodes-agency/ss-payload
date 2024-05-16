@@ -101,13 +101,11 @@ async function getTransactionData(result: any) {
             const response = await getTransactionData(result);
             result = recordTransactionData(response);
             console.log("Checking transaction data");
-            console.log(response);
             // If the response.ACTION is one of the specified values, clear the interval
             if (response.RC !== "-40" || response.RC === "-24") {
                 clearInterval(intervalId);
                 result = recordTransactionData(response);
                 console.log("Transaction found");
-                console.log(response);
             }
         };
 
@@ -118,11 +116,10 @@ async function getTransactionData(result: any) {
         setTimeout(() => {
             clearInterval(intervalId);
             console.log("Interval cleared after 15 minutes");
-        }, 20000);
+        }, 900000);
     }  else {
         result = recordTransactionData(response);
         console.log("Transaction found");
-        console.log(response);
     } 
   }
 
