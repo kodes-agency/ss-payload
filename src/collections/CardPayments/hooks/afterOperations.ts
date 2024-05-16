@@ -90,14 +90,14 @@ async function getTransactionData(doc: any) {
   if (operation === "create" || operation === "update") {
     const response = await getTransactionData(doc);
 
-    if (response.RC.includes(repeatCodes)) {
+    if (repeatCodes.includes(response.RC)) {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
             const response = await getTransactionData(doc);
             recordTransactionData(response, doc);
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
-            if (!response.RC.includes(repeatCodes)) {
+            if (!repeatCodes.includes(response.RC)) {
                 clearInterval(intervalId);
                 console.log(response)
                 recordTransactionData(response, doc);
