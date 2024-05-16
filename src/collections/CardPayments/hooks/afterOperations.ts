@@ -35,7 +35,7 @@ export const afterOperationHook: CollectionAfterOperationHook = async ({
 }) => {
 
 async function getTransactionData(result: any) {
-    const TERMINAL = "V2400709";
+    const TERMINAL = process.env.BORICA_TERMINAL;
     const TRTYPE = "90";
     const ORDER = result.ORDER;
     const TRAN_TRTYPE = "1";
@@ -95,7 +95,7 @@ async function getTransactionData(result: any) {
   if (operation === "create" || operation === "updateByID") {
     const response = await getTransactionData(result);
 
-    if (response.RC === "-40") {
+    if (response.RC === "-40" || response.RC === "-24") {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
             const response = await getTransactionData(result);
@@ -103,7 +103,7 @@ async function getTransactionData(result: any) {
             console.log("Checking transaction data");
             console.log(response);
             // If the response.ACTION is one of the specified values, clear the interval
-            if (response.RC !== "-40") {
+            if (response.RC !== "-40" || response.RC === "-24") {
                 clearInterval(intervalId);
                 result = recordTransactionData(response);
                 console.log("Transaction found");
