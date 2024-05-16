@@ -88,6 +88,8 @@ export const afterOperationHook: CollectionAfterOperationHook = async ({
   console.log("After operation hook");
 
   console.log(operation);
+  console.log(args)
+  console.log(result)
 
   if (operation === "create" || operation === "updateByID") {
     const response = await getTransactionData(result);
