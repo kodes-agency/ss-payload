@@ -1,7 +1,7 @@
 import { CollectionAfterChangeHook } from "payload/types";
 import * as crypto from "crypto";
 
-const ACTION = ["0", "1", "2", "3", "7", "21"];
+const repeatCodes = ["-40", "-24", "-33"];
 
 function recordTransactionData(data: any, result: any) {
     result.ACTION = data.ACTION
@@ -90,14 +90,14 @@ async function getTransactionData(doc: any) {
   if (operation === "create" || operation === "update") {
     const response = await getTransactionData(doc);
 
-    if (response.RC === "-40" || response.RC === "-24" || response.RC === "-33") {
+    if (response.RC.includes(repeatCodes)) {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
             const response = await getTransactionData(doc);
             recordTransactionData(response, doc);
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
-            if (response.RC !== "-40" || response.RC !== "-24" || response.RC !== "-33") {
+            if (response.RC.includes(repeatCodes)) {
                 clearInterval(intervalId);
                 console.log(response)
                 recordTransactionData(response, doc);
