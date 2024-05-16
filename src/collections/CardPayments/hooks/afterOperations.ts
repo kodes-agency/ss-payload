@@ -99,7 +99,7 @@ async function getTransactionData(result: any) {
             recordTransactionData(response, result);
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
-            if (response.RC !== "-40" || response.RC === "-24" || response.RC === "-33") {
+            if (response.RC !== "-40" || response.RC !== "-24" || response.RC !== "-33") {
                 clearInterval(intervalId);
                 console.log(response)
                 recordTransactionData(response, result);
