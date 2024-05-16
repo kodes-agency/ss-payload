@@ -16,7 +16,7 @@ export const CardPayments: CollectionConfig = {
   },
   admin: {
     useAsTitle: "code",
-    defaultColumns: ["action, createdAt, "],
+    defaultColumns: ["ACTION, AMOUNT, createdAt, "],
   },
   fields: [
     {
