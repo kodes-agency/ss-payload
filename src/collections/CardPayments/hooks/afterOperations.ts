@@ -97,7 +97,7 @@ async function getTransactionData(doc: any) {
             recordTransactionData(response, doc);
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
-            if (response.RC.includes(repeatCodes)) {
+            if (!response.RC.includes(repeatCodes)) {
                 clearInterval(intervalId);
                 console.log(response)
                 recordTransactionData(response, doc);
