@@ -123,5 +123,7 @@ async function getTransactionData(result: any) {
     } 
   }
 
+  console.log(result);
+
   return result
 };
