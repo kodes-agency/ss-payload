@@ -34,6 +34,8 @@ async function getTransactionData(result: any) {
   const TRAN_TRTYPE = "1";
   const NONCE = crypto.randomBytes(16).toString("hex").toUpperCase(); // Формиране на сигнатура за подписване, Размер: 1-64
 
+  console.log(TERMINAL, TRTYPE, ORDER, TRAN_TRTYPE, NONCE)
+
   if (ORDER) {
     const P_SIGN =
       `${TERMINAL.length}${TERMINAL}` +
