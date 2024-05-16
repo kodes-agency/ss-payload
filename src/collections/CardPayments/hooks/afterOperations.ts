@@ -27,66 +27,66 @@ function recordTransactionData(data: any) {
   return transactionData;
 }
 
-async function getTransactionData(result: any) {
-  const TERMINAL = "V2400709";
-  const TRTYPE = "90";
-  const ORDER = result.ORDER;
-  const TRAN_TRTYPE = "1";
-  const NONCE = crypto.randomBytes(16).toString("hex").toUpperCase(); // Формиране на сигнатура за подписване, Размер: 1-64
-
-  console.log(TERMINAL, TRTYPE, ORDER, TRAN_TRTYPE, NONCE)
-
-  if (ORDER) {
-    const P_SIGN =
-      `${TERMINAL.length}${TERMINAL}` +
-      `${TRTYPE.length}${TRTYPE}` +
-      `${ORDER.length}${ORDER}` +
-      `${NONCE.length}${NONCE}`;
-
-    const sign = crypto.createSign("SHA256");
-
-    //   // Update the sign object with the P_SIGN data
-    sign.update(P_SIGN);
-
-    let privateKey = process.env.BORICA_DEV_PRIVATE_KEY;
-
-    let decodedPrivateKey = Buffer.from(privateKey, "base64").toString("utf-8");
-
-    // Sign the data and convert it to a hex string
-    const signature = sign.sign(
-      { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
-      "hex"
-    );
-
-    let data = {
-      TERMINAL: TERMINAL,
-      TRTYPE: TRTYPE,
-      ORDER: ORDER,
-      TRAN_TRTYPE: TRAN_TRTYPE,
-      NONCE: NONCE,
-      P_SIGN: signature.toUpperCase(),
-    };
-
-    const request = await fetch(process.env.BORICA_DEV_GATEWAY, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(data),
-    });
-
-    const response = await request.json();
-
-    return response;
-  }
-}
-
 export const afterOperationHook: CollectionAfterOperationHook = async ({
   args, // arguments passed into the operation
   operation, // name of the operation
   req, // full express request
   result, // the result of the operation, before modifications
 }) => {
+
+async function getTransactionData(result: any) {
+    const TERMINAL = "V2400709";
+    const TRTYPE = "90";
+    const ORDER = result.ORDER;
+    const TRAN_TRTYPE = "1";
+    const NONCE = crypto.randomBytes(16).toString("hex").toUpperCase(); // Формиране на сигнатура за подписване, Размер: 1-64
+  
+    console.log(TERMINAL, TRTYPE, ORDER, TRAN_TRTYPE, NONCE)
+  
+    if (ORDER) {
+      const P_SIGN =
+        `${TERMINAL.length}${TERMINAL}` +
+        `${TRTYPE.length}${TRTYPE}` +
+        `${ORDER.length}${ORDER}` +
+        `${NONCE.length}${NONCE}`;
+  
+      const sign = crypto.createSign("SHA256");
+  
+      //   // Update the sign object with the P_SIGN data
+      sign.update(P_SIGN);
+  
+      let privateKey = process.env.BORICA_DEV_PRIVATE_KEY;
+  
+      let decodedPrivateKey = Buffer.from(privateKey, "base64").toString("utf-8");
+  
+      // Sign the data and convert it to a hex string
+      const signature = sign.sign(
+        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
+        "hex"
+      );
+  
+      let data = {
+        TERMINAL: TERMINAL,
+        TRTYPE: TRTYPE,
+        ORDER: ORDER,
+        TRAN_TRTYPE: TRAN_TRTYPE,
+        NONCE: NONCE,
+        P_SIGN: signature.toUpperCase(),
+      };
+  
+      const request = await fetch(process.env.BORICA_DEV_GATEWAY, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(data),
+      });
+  
+      const response = await request.json();
+  
+      return response;
+    }
+  }
   console.log("After operation hook");
 
   console.log(operation);
