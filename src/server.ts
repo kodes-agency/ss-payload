@@ -1,6 +1,7 @@
 import express from 'express'
 import payload from 'payload'
 import bodyParser from 'body-parser'
+import { emailTemplate } from './utilities/email'
 
 require('dotenv').config()
 const app = express()
@@ -110,6 +111,26 @@ app.post('/order', async (req, res) => {
     });
 
     // Return a success response
+
+    let email = emailTemplate("bg", order.id, order.first_name, order.last_name, order.total, "Дебитна/кредитна карта", products)
+
+    const sendEmail = await fetch("https://t.themarketer.com/api/v1/transactional/send-email?k=PXKPAPRH&u=66460293113d91172c02e379", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body : JSON.stringify({
+        from: "evgeniya.g@santa-sarah.com",
+        to: "denev@kodes.agency",
+        subject: "Поръчка от Santa Sarah",
+        body: email,
+      })
+    })
+
+    const emailResponse = await sendEmail.json();
+
+    console.log(emailResponse)
+
     return res.status(200).end();
   } catch (error) {
     console.error('Error processing order:', error);
