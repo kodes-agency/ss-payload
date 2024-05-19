@@ -31,7 +31,6 @@ async function createOrder(doc: Payment, req: PayloadRequest){
   }));
 
   const order = req.payload.create({
-    req,
     collection: "orders",
     data: {
       // @ts-ignore
