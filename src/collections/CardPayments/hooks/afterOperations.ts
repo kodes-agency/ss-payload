@@ -1,7 +1,7 @@
 import { CollectionAfterChangeHook } from "payload/types";
 import * as crypto from "crypto";
 
-const repeatCodes = ["-40", "-33", "-31"];
+const repeatCodes = ["-40", "-33", "-31", "-24"];
 
 function recordTransactionData(data: any, result: any) {
     result.ACTION = data.ACTION
@@ -35,9 +35,7 @@ async function getTransactionData(doc: any) {
     const ORDER = doc.ORDER;
     const TRAN_TRTYPE = "1";
     const NONCE = crypto.randomBytes(16).toString("hex").toUpperCase(); // Формиране на сигнатура за подписване, Размер: 1-64
-  
-    console.log(TERMINAL, TRTYPE, ORDER, TRAN_TRTYPE, NONCE)
-  
+    
     if (ORDER) {
       const P_SIGN =
         `${TERMINAL.length}${TERMINAL}` +
@@ -85,7 +83,6 @@ async function getTransactionData(doc: any) {
   console.log("After operation hook");
 
   console.log(operation);
-  console.log(doc)
 
   if (operation === "create" || operation === "update") {
     const response = await getTransactionData(doc);
@@ -94,13 +91,47 @@ async function getTransactionData(doc: any) {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
             const response = await getTransactionData(doc);
-            recordTransactionData(response, doc);
+            doc.ACTION = response.ACTION
+            doc.STATUSMSG = response.STATUSMSG
+            doc.RC = response.RC
+            doc.AMOUNT = response.AMOUNT
+            doc.CURRENCY = response.CURRENCY
+            doc.ORDER = response.ORDER
+            doc.DESC = response.DESC
+            doc.TIMESTAMP = response.TIMESTAMP
+            doc.LANG = response.LANG
+            doc.TRAN_TRTYPE = response.TRAN_TRTYPE
+            doc.RRN = response.RRN
+            doc.INT_REF = response.INT_REF
+            doc.PARES_STATUS = response.PARES_STATUS
+            doc.AUTH_STEP_RES = response.AUTH_STEP_RES
+            doc.CARDHOLDERINFO = response.CARDHOLDERINFO
+            doc.ECI = response.ECI
+            doc.CARD = response.CARD
+            doc.CARD_BRAND = response.CARD_BRAND
             console.log(doc)
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
             if (!repeatCodes.includes(response.RC)) {
                 clearInterval(intervalId);
-                recordTransactionData(response, doc);
+                doc.ACTION = response.ACTION
+                doc.STATUSMSG = response.STATUSMSG
+                doc.RC = response.RC
+                doc.AMOUNT = response.AMOUNT
+                doc.CURRENCY = response.CURRENCY
+                doc.ORDER = response.ORDER
+                doc.DESC = response.DESC
+                doc.TIMESTAMP = response.TIMESTAMP
+                doc.LANG = response.LANG
+                doc.TRAN_TRTYPE = response.TRAN_TRTYPE
+                doc.RRN = response.RRN
+                doc.INT_REF = response.INT_REF
+                doc.PARES_STATUS = response.PARES_STATUS
+                doc.AUTH_STEP_RES = response.AUTH_STEP_RES
+                doc.CARDHOLDERINFO = response.CARDHOLDERINFO
+                doc.ECI = response.ECI
+                doc.CARD = response.CARD
+                doc.CARD_BRAND = response.CARD_BRAND
                 console.log(doc)
                 console.log("Transaction found");
             }
@@ -115,9 +146,26 @@ async function getTransactionData(doc: any) {
             console.log("Interval cleared after 15 minutes");
         }, 900000);
     }  else {
-        recordTransactionData(response, doc);
+        doc.ACTION = response.ACTION
+        doc.STATUSMSG = response.STATUSMSG
+        doc.RC = response.RC
+        doc.AMOUNT = response.AMOUNT
+        doc.CURRENCY = response.CURRENCY
+        doc.ORDER = response.ORDER
+        doc.DESC = response.DESC
+        doc.TIMESTAMP = response.TIMESTAMP
+        doc.LANG = response.LANG
+        doc.TRAN_TRTYPE = response.TRAN_TRTYPE
+        doc.RRN = response.RRN
+        doc.INT_REF = response.INT_REF
+        doc.PARES_STATUS = response.PARES_STATUS
+        doc.AUTH_STEP_RES = response.AUTH_STEP_RES
+        doc.CARDHOLDERINFO = response.CARDHOLDERINFO
+        doc.ECI = response.ECI
+        doc.CARD = response.CARD
+        doc.CARD_BRAND = response.CARD_BRAND
         console.log(doc)
-        console.log("Transaction is not -40 or -24 or -33");
+        console.log("Transaction is not -40 or -24 or -33 or -31");
     } 
   }
 };
