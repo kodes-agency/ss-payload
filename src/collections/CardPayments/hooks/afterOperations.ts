@@ -54,7 +54,7 @@ async function createOrder(orderData: OrderData, req: PayloadRequest){
 async function setTransactionRecords(
   req: PayloadRequest,
   doc: Payment,
-  transactionData: Payment
+  transactionData: Payment,
 ) {
   await req.payload.update({
     req,
@@ -92,8 +92,13 @@ async function setTransactionRecords(
 export const afterOperationHook: CollectionAfterChangeHook = async ({
   doc, // arguments passed into the operation
   req,
+  previousDoc,
   operation, // name of the operation
 }) => {
+
+  if(operation === "update") {
+    console.log(doc.orderData.items)
+  }
 
 
   if (operation === "create" ) {
@@ -104,12 +109,12 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
       let intervalId: NodeJS.Timeout;
       const checkTransactionData = async () => {
         const transactionData = await getTransactionData(doc.ORDER);
-        await setTransactionRecords(req, doc, transactionData);
+        await setTransactionRecords(req, previousDoc, transactionData);
         console.log("Waiting for transaction data");
         // If the transactionData.ACTION is one of the specified values, clear the interval
         if (!repeatCodes.includes(transactionData.RC)) {
           clearInterval(intervalId);
-          await setTransactionRecords(req, doc, transactionData);
+          await setTransactionRecords(req, previousDoc, transactionData);
           console.log("Transaction found");
         }
       };
@@ -123,7 +128,7 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
         console.log("Interval cleared after 15 minutes");
       }, 900000);
     } else {
-      await setTransactionRecords(req, doc, transactionData);
+      await setTransactionRecords(req, previousDoc, transactionData);
       console.log("Transaction is not -40 or -24 or -33 or -31");
     }
   }
