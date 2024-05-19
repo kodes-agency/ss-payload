@@ -1,7 +1,7 @@
 import { CollectionAfterChangeHook } from "payload/types";
 import * as crypto from "crypto";
 
-const repeatCodes = ["-40", "-24", "-33"];
+const repeatCodes = ["-40", "-33", "-31"];
 
 function recordTransactionData(data: any, result: any) {
     result.ACTION = data.ACTION
@@ -95,12 +95,13 @@ async function getTransactionData(doc: any) {
         const checkTransactionData = async () => {
             const response = await getTransactionData(doc);
             recordTransactionData(response, doc);
+            console.log(doc)
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
             if (!repeatCodes.includes(response.RC)) {
                 clearInterval(intervalId);
-                console.log(response)
                 recordTransactionData(response, doc);
+                console.log(doc)
                 console.log("Transaction found");
             }
         };
@@ -115,11 +116,8 @@ async function getTransactionData(doc: any) {
         }, 900000);
     }  else {
         recordTransactionData(response, doc);
+        console.log(doc)
         console.log("Transaction is not -40 or -24 or -33");
     } 
   }
-
-  console.log(doc);
-
-  return doc
 };

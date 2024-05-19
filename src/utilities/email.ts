@@ -77,17 +77,13 @@ function emailTemplate(lang: string, orderNumber: string, firstName: string, las
                     padding: 10px;
                     text-align: center;
                     font-size: 12px;
-                }
-
-                .flex-col {
-                    display: flex;
-                    flex-direction: column;
+                    color: #847648;
                 }
                 
                 a {
                     color: #847648;
                     text-decoration: none;
-                    font-size: 14px;
+                    font-size: 12px;
                 }
 
                 .table-bottom-header {
@@ -119,7 +115,7 @@ function emailTemplate(lang: string, orderNumber: string, firstName: string, las
                         <tfoot>
                             <tr>
                                 <td colspan="2">${lang === "bg" ? "Общо" : "Total"}</td>
-                                <td>${orderTotal}</td>
+                                <td>${orderTotal} BGN</td>
                             </tr>
                             <tr>
                                 <td colspan="2">${lang === "bg" ? "Доставка" : "Shipping"}</td>
@@ -138,12 +134,9 @@ function emailTemplate(lang: string, orderNumber: string, firstName: string, las
                 <div class="footer">
                     <p>&copy; 2024 ${lang === "bg" ? "Винарско имение Санта Сара АД" : "Santa Sarah Wine Estate"}</p>
                     <p>${lang === "bg" ? "Горица 8225, ул. Ивайло 2, <br> района на Поморие, Бургас, България" : "Goritsa 8225, Ivaylo 2 street, <br> Pomorie region, Burgas, Bulgaria"}</p>
-                    
-                    <div class="flex-col">
-                        <a href="https://wwww.santa-sarah.com">www.santa-sarah.com</a>
-                        <a href="tel:+359888908064">+359 888 9080 64</a>
-                        <a href="mailto:genowski@santa-sarah.com">genowski@santa-sarah.com</a>
-                    </div>
+                    <a href="https://wwww.santa-sarah.com">www.santa-sarah.com</a>
+                    <a href="tel:+359888908064">+359 888 9080 64</a>
+                    <a href="mailto:genowski@santa-sarah.com">genowski@santa-sarah.com</a>
                 </div>
             </div>
         </body>
