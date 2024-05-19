@@ -1,32 +1,32 @@
-// import express from 'express'
-// import payload from 'payload'
-// import bodyParser from 'body-parser'
-// import { sendEmail } from './utilities/email'
+import express from 'express'
+import payload from 'payload'
+import bodyParser from 'body-parser'
+import { sendEmail } from './utilities/email'
 
-// require('dotenv').config()
-// const app = express()
+require('dotenv').config()
+const app = express()
 
-// // Redirect root to Admin panel
-// app.get('/', (_, res) => {
-//   res.redirect('/admin')
-// })
+// Redirect root to Admin panel
+app.get('/', (_, res) => {
+  res.redirect('/admin')
+})
 
-// const start = async () => {
-//   // Initialize Payload
-//   await payload.init({
-//     secret: process.env.PAYLOAD_SECRET,
-//     express: app,
-//     onInit: async () => {
-//       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
-//     },
-//   })
+const start = async () => {
+  // Initialize Payload
+  await payload.init({
+    secret: process.env.PAYLOAD_SECRET,
+    express: app,
+    onInit: async () => {
+      payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
+    },
+  })
 
-//   // Add your own express routes here
+  // Add your own express routes here
 
-//   app.listen(3001)
-// }
+  app.listen(3001)
+}
 
-// start()
+start()
 
 // app.use(bodyParser.json());
 // // Handle POST request to '/order'
@@ -101,7 +101,7 @@
 //         address_1: order.billing.address_1,
 //         address_2: order.billing.address_2,
 //         country: order.billing.country,
-//         postcode: order.billing.postcode,
+//         pxostcode: order.billing.postcode,
 //         city: order.billing.city,
 //         status: order.status,
 //         orderTotal: order.total,
