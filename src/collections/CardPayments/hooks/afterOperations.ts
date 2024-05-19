@@ -91,47 +91,47 @@ async function getTransactionData(doc: any) {
         let intervalId: NodeJS.Timeout;
         const checkTransactionData = async () => {
             const response = await getTransactionData(doc);
-            doc.ACTION = response.ACTION
-            doc.STATUSMSG = response.STATUSMSG
-            doc.RC = response.RC
-            doc.AMOUNT = response.AMOUNT
-            doc.CURRENCY = response.CURRENCY
-            doc.ORDER = response.ORDER
-            doc.DESC = response.DESC
-            doc.TIMESTAMP = response.TIMESTAMP
-            doc.LANG = response.LANG
-            doc.TRAN_TRTYPE = response.TRAN_TRTYPE
-            doc.RRN = response.RRN
-            doc.INT_REF = response.INT_REF
-            doc.PARES_STATUS = response.PARES_STATUS
-            doc.AUTH_STEP_RES = response.AUTH_STEP_RES
-            doc.CARDHOLDERINFO = response.CARDHOLDERINFO
-            doc.ECI = response.ECI
-            doc.CARD = response.CARD
-            doc.CARD_BRAND = response.CARD_BRAND
+            doc.ACTION = await response.ACTION
+            doc.STATUSMSG = await response.STATUSMSG
+            doc.RC = await response.RC
+            doc.AMOUNT = await response.AMOUNT
+            doc.CURRENCY = await response.CURRENCY
+            doc.ORDER = await response.ORDER
+            doc.DESC = await response.DESC
+            doc.TIMESTAMP = await response.TIMESTAMP
+            doc.LANG = await response.LANG
+            doc.TRAN_TRTYPE = await response.TRAN_TRTYPE
+            doc.RRN = await response.RRN
+            doc.INT_REF = await response.INT_REF
+            doc.PARES_STATUS = await response.PARES_STATUS
+            doc.AUTH_STEP_RES = await response.AUTH_STEP_RES
+            doc.CARDHOLDERINFO = await response.CARDHOLDERINFO
+            doc.ECI = await response.ECI
+            doc.CARD = await response.CARD
+            doc.CARD_BRAND = await response.CARD_BRAND
             console.log(doc)
             console.log("Waiting for transaction data");
             // If the response.ACTION is one of the specified values, clear the interval
             if (!repeatCodes.includes(response.RC)) {
                 clearInterval(intervalId);
-                doc.ACTION = response.ACTION
-                doc.STATUSMSG = response.STATUSMSG
-                doc.RC = response.RC
-                doc.AMOUNT = response.AMOUNT
-                doc.CURRENCY = response.CURRENCY
-                doc.ORDER = response.ORDER
-                doc.DESC = response.DESC
-                doc.TIMESTAMP = response.TIMESTAMP
-                doc.LANG = response.LANG
-                doc.TRAN_TRTYPE = response.TRAN_TRTYPE
-                doc.RRN = response.RRN
-                doc.INT_REF = response.INT_REF
-                doc.PARES_STATUS = response.PARES_STATUS
-                doc.AUTH_STEP_RES = response.AUTH_STEP_RES
-                doc.CARDHOLDERINFO = response.CARDHOLDERINFO
-                doc.ECI = response.ECI
-                doc.CARD = response.CARD
-                doc.CARD_BRAND = response.CARD_BRAND
+                doc.ACTION = await response.ACTION
+                doc.STATUSMSG = await response.STATUSMSG
+                doc.RC = await response.RC
+                doc.AMOUNT = await response.AMOUNT
+                doc.CURRENCY = await response.CURRENCY
+                doc.ORDER = await response.ORDER
+                doc.DESC = await response.DESC
+                doc.TIMESTAMP = await response.TIMESTAMP
+                doc.LANG = await response.LANG
+                doc.TRAN_TRTYPE = await response.TRAN_TRTYPE
+                doc.RRN = await response.RRN
+                doc.INT_REF = await response.INT_REF
+                doc.PARES_STATUS = await response.PARES_STATUS
+                doc.AUTH_STEP_RES = await response.AUTH_STEP_RES
+                doc.CARDHOLDERINFO = await response.CARDHOLDERINFO
+                doc.ECI = await response.ECI
+                doc.CARD = await response.CARD
+                doc.CARD_BRAND = await response.CARD_BRAND
                 console.log(doc)
                 console.log("Transaction found");
             }
@@ -146,28 +146,28 @@ async function getTransactionData(doc: any) {
             console.log("Interval cleared after 15 minutes");
         }, 900000);
     }  else {
-        doc.ACTION = response.ACTION
-        doc.STATUSMSG = response.STATUSMSG
-        doc.RC = response.RC
-        doc.AMOUNT = response.AMOUNT
-        doc.CURRENCY = response.CURRENCY
-        doc.ORDER = response.ORDER
-        doc.DESC = response.DESC
-        doc.TIMESTAMP = response.TIMESTAMP
-        doc.LANG = response.LANG
-        doc.TRAN_TRTYPE = response.TRAN_TRTYPE
-        doc.RRN = response.RRN
-        doc.INT_REF = response.INT_REF
-        doc.PARES_STATUS = response.PARES_STATUS
-        doc.AUTH_STEP_RES = response.AUTH_STEP_RES
-        doc.CARDHOLDERINFO = response.CARDHOLDERINFO
-        doc.ECI = response.ECI
-        doc.CARD = response.CARD
-        doc.CARD_BRAND = response.CARD_BRAND
+        doc.ACTION = await response.ACTION
+        doc.STATUSMSG = await response.STATUSMSG
+        doc.RC = await response.RC
+        doc.AMOUNT = await response.AMOUNT
+        doc.CURRENCY = await response.CURRENCY
+        doc.ORDER = await response.ORDER
+        doc.DESC = await response.DESC
+        doc.TIMESTAMP = await response.TIMESTAMP
+        doc.LANG = await response.LANG
+        doc.TRAN_TRTYPE = await response.TRAN_TRTYPE
+        doc.RRN = await response.RRN
+        doc.INT_REF = await response.INT_REF
+        doc.PARES_STATUS = await response.PARES_STATUS
+        doc.AUTH_STEP_RES = await response.AUTH_STEP_RES
+        doc.CARDHOLDERINFO = await response.CARDHOLDERINFO
+        doc.ECI = await response.ECI
+        doc.CARD = await response.CARD
+        doc.CARD_BRAND = await response.CARD_BRAND
         console.log(doc)
         console.log("Transaction is not -40 or -24 or -33 or -31");
     } 
   }
 
-  return doc
+  return await doc
 };
