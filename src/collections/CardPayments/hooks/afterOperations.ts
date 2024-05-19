@@ -168,4 +168,6 @@ async function getTransactionData(doc: any) {
         console.log("Transaction is not -40 or -24 or -33 or -31");
     } 
   }
+
+  return doc
 };
