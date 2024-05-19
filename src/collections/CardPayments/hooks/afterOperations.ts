@@ -1,17 +1,17 @@
-import { CollectionAfterChangeHook } from "payload/types";
+import { CollectionAfterChangeHook, PayloadRequest } from "payload/types";
 import { getTransactionData } from "../../../utilities/getTransactionData";
-import { Payload } from "payload";
 import { Payment } from "payload/generated-types";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
 async function setTransactionRecords(
-  payload: Payload,
+  req: PayloadRequest,
   id: string,
   transactionData: Payment
 ) {
     console.log("Setting transaction records");
-  await payload.update({
+  await req.payload.update({
+    req,
     collection: "payments",
     id: id,
     data: {
@@ -39,22 +39,23 @@ async function setTransactionRecords(
 
 export const afterOperationHook: CollectionAfterChangeHook = async ({
   doc, // arguments passed into the operation
-  req: { payload },
+  req,
   operation, // name of the operation
 }) => {
-  if (operation === "create" || operation === "update") {
+  if (operation === "create" ) {
     const transactionData = await getTransactionData(doc.ORDER);
+    console.log("trying to update")
 
     if (repeatCodes.includes(transactionData.RC)) {
       let intervalId: NodeJS.Timeout;
       const checkTransactionData = async () => {
         const transactionData = await getTransactionData(doc.ORDER);
-        await setTransactionRecords(payload, doc.id, transactionData);
+        await setTransactionRecords(req, doc.id, transactionData);
         console.log("Waiting for transaction data");
         // If the transactionData.ACTION is one of the specified values, clear the interval
         if (!repeatCodes.includes(transactionData.RC)) {
           clearInterval(intervalId);
-          await setTransactionRecords(payload, doc.id, transactionData);
+          await setTransactionRecords(req, doc.id, transactionData);
           console.log("Transaction found");
         }
       };
@@ -68,7 +69,7 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
         console.log("Interval cleared after 15 minutes");
       }, 900000);
     } else {
-      await setTransactionRecords(payload, doc.id, transactionData);
+    //   await setTransactionRecords(payload, doc.id, transactionData);
       console.log("Transaction is not -40 or -24 or -33 or -31");
     }
   }

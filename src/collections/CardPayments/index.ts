@@ -142,7 +142,7 @@ export const CardPayments: CollectionConfig = {
                   name: "ORDER",
                   label: "Поръчка №",
                   admin: {
-                    readOnly: true,
+                    readOnly: false,
                   },
                 },
                 {
