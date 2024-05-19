@@ -8,10 +8,14 @@ const repeatCodes = ["-40", "-33", "-31", "-24"];
 
 async function createOrder(orderData: OrderData, req: PayloadRequest){
 
-  if (!orderData.items) {
+  if (!orderData) {
     throw new Error('Invalid order data');
   }
   console.log(orderData)
+
+  if(!orderData.items || orderData.items.length === 0) {
+    throw new Error('Invalid order items');
+  }
   const products = await Promise.all(orderData.items.map(async (orderItem) => {
     const product = await req.payload.findByID({
       collection: 'products',
@@ -97,11 +101,6 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
   operation, // name of the operation
 }) => {
 
-  if(operation === "update") {
-    console.log(doc.orderData.items)
-  }
-
-
   if (operation === "create" ) {
     const transactionData = await getTransactionData(doc.ORDER);
     console.log("trying to update")
@@ -110,13 +109,11 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
       let intervalId: NodeJS.Timeout;
       const checkTransactionData = async () => {
         const transactionData = await getTransactionData(doc.ORDER);
-        console.log(doc)
         await setTransactionRecords(req, await doc, transactionData);
         console.log("Waiting for transaction data");
         // If the transactionData.ACTION is one of the specified values, clear the interval
         if (!repeatCodes.includes(transactionData.RC)) {
           clearInterval(intervalId);
-          console.log(doc)
           await setTransactionRecords(req, await doc, transactionData);
           console.log("Transaction found");
         }
@@ -131,7 +128,6 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
         console.log("Interval cleared after 15 minutes");
       }, 900000);
     } else {
-      console.log(doc)
       await setTransactionRecords(req, await doc, transactionData);
       console.log("Transaction is not -40 or -24 or -33 or -31");
     }
