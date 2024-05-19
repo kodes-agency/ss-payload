@@ -6,17 +6,10 @@ import { OrderData } from "../../../types/orderType";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
-async function createOrder(orderData: OrderData, req: PayloadRequest){
+async function createOrder(doc: Payment, req: PayloadRequest){
 
-  if (!orderData) {
-    throw new Error('Invalid order data');
-  }
-  console.log(orderData)
-
-  if(!orderData.items || orderData.items.length === 0) {
-    throw new Error('Invalid order items');
-  }
-  const products = await Promise.all(orderData.items.map(async (orderItem) => {
+  // @ts-expect-error
+  const products = await Promise.all(doc.orderData.items.map(async (orderItem) => {
     const product = await req.payload.findByID({
       collection: 'products',
       id: orderItem.description.replace(/<\/?p>/g, '')
@@ -39,18 +32,18 @@ async function createOrder(orderData: OrderData, req: PayloadRequest){
     req,
     collection: "orders",
     data: {
-      first_name: orderData.billing_address.first_name,
-      last_name: orderData.billing_address.last_name,
-      email: orderData.billing_address.email,
-      phone: orderData.billing_address.phone,
-      address_1: orderData.billing_address.address_1,
-      address_2: orderData.billing_address.address_2,
-      country: orderData.billing_address.country,
-      city: orderData.billing_address.city,
-      postcode: orderData.billing_address.postcode,
+      first_name: doc.orderData.billing_address.first_name,
+      last_name: doc.orderData.billing_address.last_name,
+      email: doc.orderData.billing_address.email,
+      phone: doc.orderData.billing_address.phone,
+      address_1: doc.orderData.billing_address.address_1,
+      address_2: doc.orderData.billing_address.address_2,
+      country: doc.orderData.billing_address.country,
+      city: doc.orderData.billing_address.city,
+      postcode: doc.orderData.billing_address.postcode,
       status: "processing",
-      orderTotal: orderData.totals.total_price,
-      customer_note: orderData.customer_note,
+      orderTotal: doc.orderData.totals.total_price,
+      customer_note: doc.orderData.customer_note,
       products: products
     },
   });
