@@ -142,7 +142,7 @@ export const CardPayments: CollectionConfig = {
                   name: "ORDER",
                   label: "Поръчка №",
                   admin: {
-                    readOnly: false,
+                    readOnly: true,
                   },
                 },
                 {
@@ -268,6 +268,14 @@ export const CardPayments: CollectionConfig = {
         },
       ],
     },
+    {
+      type: "json",
+      name: "orderData",
+      label: "Данни за поръчката",
+      admin: {
+        readOnly: true,
+      },
+    }
   ],
 };
 
