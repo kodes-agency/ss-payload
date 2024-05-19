@@ -4,6 +4,8 @@ import { getTransactionData } from "../../../utilities/getTransactionData";
 import { Payment } from "payload/generated-types";
 import { OrderData } from "../../../types/orderType";
 
+
+
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
 async function createOrder(doc: Payment, req: PayloadRequest){
@@ -32,17 +34,28 @@ async function createOrder(doc: Payment, req: PayloadRequest){
     req,
     collection: "orders",
     data: {
+      // @ts-ignore
       first_name: doc.orderData.billing_address.first_name,
+      // @ts-ignore
       last_name: doc.orderData.billing_address.last_name,
+      // @ts-ignore
       email: doc.orderData.billing_address.email,
+      // @ts-ignore
       phone: doc.orderData.billing_address.phone,
+      // @ts-ignore
       address_1: doc.orderData.billing_address.address_1,
+      // @ts-ignore
       address_2: doc.orderData.billing_address.address_2,
+      // @ts-ignore
       country: doc.orderData.billing_address.country,
+      // @ts-ignore
       city: doc.orderData.billing_address.city,
+      // @ts-ignore
       postcode: doc.orderData.billing_address.postcode,
       status: "processing",
+      // @ts-ignore
       orderTotal: doc.orderData.totals.total_price,
+      // @ts-ignore
       customer_note: doc.orderData.customer_note,
       products: products
     },
@@ -82,7 +95,6 @@ async function setTransactionRecords(
   });
 
   if(transactionData.ACTION === "0" && transactionData.RC === "00") {
-    // @ts-expect-error
     await createOrder(doc, req);
   }
 }
