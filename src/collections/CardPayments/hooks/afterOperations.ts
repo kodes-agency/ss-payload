@@ -1,15 +1,57 @@
 import { CollectionAfterChangeHook, PayloadRequest } from "payload/types";
+import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 import { getTransactionData } from "../../../utilities/getTransactionData";
 import { Payment } from "payload/generated-types";
+import { OrderData } from "../../../types/orderType";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
+
+async function createOrder(orderData: OrderData, req: PayloadRequest){
+  const products = await Promise.all(orderData.items.map(async (orderItem) => {
+    const product = await req.payload.findByID({
+      collection: 'products',
+      id: orderItem.description.replace(/<\/?p>/g, '')
+    });
+
+    // Return an object containing the product details
+    return {
+      product: product.id,
+      name: product.productTitle,
+      sku: orderItem.sku,
+      quantity: orderItem.quantity,
+      price_readOnly: Number(orderItem.prices.price),
+      price: Number(orderItem.prices.price),
+      total: orderItem.totals.total_price,
+      product_key: orderItem.id
+    };
+  }));
+
+  const order = req.payload.create({
+    req,
+    collection: "orders",
+    data: {
+      first_name: orderData.billing_address.first_name,
+      last_name: orderData.billing_address.last_name,
+      email: orderData.billing_address.email,
+      phone: orderData.billing_address.phone,
+      address_1: orderData.billing_address.address_1,
+      address_2: orderData.billing_address.address_2,
+      country: orderData.billing_address.country,
+      city: orderData.billing_address.city,
+      postcode: orderData.billing_address.postcode,
+      status: "processing",
+      orderTotal: orderData.totals.total_price,
+      customer_note: orderData.customer_note,
+      products: products
+    },
+  });
+}
 
 async function setTransactionRecords(
   req: PayloadRequest,
   id: string,
   transactionData: Payment
 ) {
-    console.log("Setting transaction records");
   await req.payload.update({
     req,
     collection: "payments",
@@ -35,13 +77,21 @@ async function setTransactionRecords(
       CARD_BRAND: transactionData.CARD_BRAND,
     },
   });
+
+  if(transactionData.ACTION === "0" && transactionData.RC === "00") {
+    // @ts-expect-error
+    await createOrder(transactionData.orderData);
+  }
 }
+
 
 export const afterOperationHook: CollectionAfterChangeHook = async ({
   doc, // arguments passed into the operation
   req,
   operation, // name of the operation
 }) => {
+
+
   if (operation === "create" ) {
     const transactionData = await getTransactionData(doc.ORDER);
     console.log("trying to update")
