@@ -3,7 +3,7 @@ import { Country } from "../../fields/country";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 import CustomAdminError from "../../utilities/errorClasses";
 import { deleteOrder } from "./hooks/delete";
-import { manageOrders } from "./hooks/manageOrders";
+// import { manageOrders } from "./hooks/manageOrders";
 
 
 
@@ -28,7 +28,7 @@ export const Orders: CollectionConfig = {
   },
   hooks: {
     beforeDelete: [deleteOrder],
-    beforeOperation: [manageOrders]
+    // beforeOperation: [manageOrders]
   },
   fields: [
     {
