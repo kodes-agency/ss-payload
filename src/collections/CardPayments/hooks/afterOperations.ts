@@ -1,173 +1,76 @@
 import { CollectionAfterChangeHook } from "payload/types";
-import * as crypto from "crypto";
+import { getTransactionData } from "../../../utilities/getTransactionData";
+import { Payload } from "payload";
+import { Payment } from "payload/generated-types";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
-function recordTransactionData(data: any, result: any) {
-    result.ACTION = data.ACTION
-    result.STATUSMSG = data.STATUSMSG
-    result.RC = data.RC
-    result.AMOUNT = data.AMOUNT
-    result.CURRENCY = data.CURRENCY
-    result.ORDER = data.ORDER
-    result. DESC = data.DESC
-    result.TIMESTAMP = data.TIMESTAMP
-    result.LANG = data.LANG
-    result.TRAN_TRTYPE = data.TRAN_TRTYPE
-    result.RRN = data.RRN
-    result.INT_REF = data.INT_REF
-    result.PARES_STATUS = data.PARES_STATUS
-    result.AUTH_STEP_RES = data.AUTH_STEP_RES
-    result.CARDHOLDERINFO = data.CARDHOLDERINFO
-    result.ECI = data.ECI
-    result.CARD = data.CARD
-    result.CARD_BRAND = data.CARD_BRAND
+async function setTransactionRecords(
+  payload: Payload,
+  id: string,
+  transactionData: Payment
+) {
+  await payload.update({
+    collection: "payments",
+    id: id,
+    data: {
+      ACTION: transactionData.ACTION,
+      STATUSMSG: transactionData.STATUSMSG,
+      RC: transactionData.RC,
+      AMOUNT: transactionData.AMOUNT,
+      CURRENCY: transactionData.CURRENCY,
+      ORDER: transactionData.ORDER,
+      DESC: transactionData.DESC,
+      TIMESTAMP: transactionData.TIMESTAMP,
+      LANG: transactionData.LANG,
+      TRAN_TRTYPE: transactionData.TRAN_TRTYPE,
+      RRN: transactionData.RRN,
+      INT_REF: transactionData.INT_REF,
+      PARES_STATUS: transactionData.PARES_STATUS,
+      AUTH_STEP_RES: transactionData.AUTH_STEP_RES,
+      CARDHOLDERINFO: transactionData.CARDHOLDERINFO,
+      ECI: transactionData.ECI,
+      CARD: transactionData.CARD,
+      CARD_BRAND: transactionData.CARD_BRAND,
+    },
+  });
 }
 
 export const afterOperationHook: CollectionAfterChangeHook = async ({
   doc, // arguments passed into the operation
+  req: { payload },
   operation, // name of the operation
 }) => {
+  if (operation === "create" || operation === "update") {
+    const transactionData = await getTransactionData(doc.ORDER);
 
-async function getTransactionData(doc: any) {
-    const TERMINAL = process.env.BORICA_TERMINAL;
-    const TRTYPE = "90";
-    const ORDER = doc.ORDER;
-    const TRAN_TRTYPE = "1";
-    const NONCE = crypto.randomBytes(16).toString("hex").toUpperCase(); // Формиране на сигнатура за подписване, Размер: 1-64
-    
-    if (ORDER) {
-      const P_SIGN =
-        `${TERMINAL.length}${TERMINAL}` +
-        `${TRTYPE.length}${TRTYPE}` +
-        `${ORDER.length}${ORDER}` +
-        `${NONCE.length}${NONCE}`;
-  
-      const sign = crypto.createSign("SHA256");
-  
-      //   // Update the sign object with the P_SIGN data
-      sign.update(P_SIGN);
-  
-      let privateKey = process.env.BORICA_DEV_PRIVATE_KEY;
-  
-      let decodedPrivateKey = Buffer.from(privateKey, "base64").toString("utf-8");
-  
-      // Sign the data and convert it to a hex string
-      const signature = sign.sign(
-        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
-        "hex"
-      );
-  
-      let data = {
-        TERMINAL: TERMINAL,
-        TRTYPE: TRTYPE,
-        ORDER: ORDER,
-        TRAN_TRTYPE: TRAN_TRTYPE,
-        NONCE: NONCE,
-        P_SIGN: signature.toUpperCase(),
+    if (repeatCodes.includes(transactionData.RC)) {
+      let intervalId: NodeJS.Timeout;
+      const checkTransactionData = async () => {
+        const transactionData = await getTransactionData(doc.ORDER);
+        setTransactionRecords(payload, doc.id, transactionData);
+        console.log("Waiting for transaction data");
+        // If the transactionData.ACTION is one of the specified values, clear the interval
+        if (!repeatCodes.includes(transactionData.RC)) {
+          clearInterval(intervalId);
+          setTransactionRecords(payload, doc.id, transactionData);
+          console.log("Transaction found");
+        }
       };
-  
-      const request = await fetch(process.env.BORICA_DEV_GATEWAY, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams(data),
-      });
-  
-      const response = await request.json();
-  
-      return response;
+
+      // Start the interval
+      intervalId = setInterval(checkTransactionData, 20000);
+
+      // Clear the interval after 15 minutes (900000 milliseconds)
+      setTimeout(() => {
+        clearInterval(intervalId);
+        console.log("Interval cleared after 15 minutes");
+      }, 900000);
+    } else {
+      setTransactionRecords(payload, doc.id, transactionData);
+      console.log("Transaction is not -40 or -24 or -33 or -31");
     }
   }
-  console.log("After operation hook");
 
-  console.log(operation);
-
-  if (operation === "create" || operation === "update") {
-    const response = await getTransactionData(doc);
-
-    if (repeatCodes.includes(response.RC)) {
-        let intervalId: NodeJS.Timeout;
-        const checkTransactionData = async () => {
-            const response = await getTransactionData(doc);
-            doc.ACTION = await response.ACTION
-            doc.STATUSMSG = await response.STATUSMSG
-            doc.RC = await response.RC
-            doc.AMOUNT = await response.AMOUNT
-            doc.CURRENCY = await response.CURRENCY
-            doc.ORDER = await response.ORDER
-            doc.DESC = await response.DESC
-            doc.TIMESTAMP = await response.TIMESTAMP
-            doc.LANG = await response.LANG
-            doc.TRAN_TRTYPE = await response.TRAN_TRTYPE
-            doc.RRN = await response.RRN
-            doc.INT_REF = await response.INT_REF
-            doc.PARES_STATUS = await response.PARES_STATUS
-            doc.AUTH_STEP_RES = await response.AUTH_STEP_RES
-            doc.CARDHOLDERINFO = await response.CARDHOLDERINFO
-            doc.ECI = await response.ECI
-            doc.CARD = await response.CARD
-            doc.CARD_BRAND = await response.CARD_BRAND
-            console.log(doc)
-            console.log("Waiting for transaction data");
-            // If the response.ACTION is one of the specified values, clear the interval
-            if (!repeatCodes.includes(response.RC)) {
-                clearInterval(intervalId);
-                doc.ACTION = await response.ACTION
-                doc.STATUSMSG = await response.STATUSMSG
-                doc.RC = await response.RC
-                doc.AMOUNT = await response.AMOUNT
-                doc.CURRENCY = await response.CURRENCY
-                doc.ORDER = await response.ORDER
-                doc.DESC = await response.DESC
-                doc.TIMESTAMP = await response.TIMESTAMP
-                doc.LANG = await response.LANG
-                doc.TRAN_TRTYPE = await response.TRAN_TRTYPE
-                doc.RRN = await response.RRN
-                doc.INT_REF = await response.INT_REF
-                doc.PARES_STATUS = await response.PARES_STATUS
-                doc.AUTH_STEP_RES = await response.AUTH_STEP_RES
-                doc.CARDHOLDERINFO = await response.CARDHOLDERINFO
-                doc.ECI = await response.ECI
-                doc.CARD = await response.CARD
-                doc.CARD_BRAND = await response.CARD_BRAND
-                console.log(doc)
-                console.log("Transaction found");
-            }
-        };
-
-        // Start the interval
-        intervalId = setInterval(checkTransactionData, 20000);
-
-        // Clear the interval after 15 minutes (900000 milliseconds)
-        setTimeout(() => {
-            clearInterval(intervalId);
-            console.log("Interval cleared after 15 minutes");
-        }, 900000);
-    }  else {
-        doc.ACTION = await response.ACTION
-        doc.STATUSMSG = await response.STATUSMSG
-        doc.RC = await response.RC
-        doc.AMOUNT = await response.AMOUNT
-        doc.CURRENCY = await response.CURRENCY
-        doc.ORDER = await response.ORDER
-        doc.DESC = await response.DESC
-        doc.TIMESTAMP = await response.TIMESTAMP
-        doc.LANG = await response.LANG
-        doc.TRAN_TRTYPE = await response.TRAN_TRTYPE
-        doc.RRN = await response.RRN
-        doc.INT_REF = await response.INT_REF
-        doc.PARES_STATUS = await response.PARES_STATUS
-        doc.AUTH_STEP_RES = await response.AUTH_STEP_RES
-        doc.CARDHOLDERINFO = await response.CARDHOLDERINFO
-        doc.ECI = await response.ECI
-        doc.CARD = await response.CARD
-        doc.CARD_BRAND = await response.CARD_BRAND
-        console.log(doc)
-        console.log("Transaction is not -40 or -24 or -33 or -31");
-    } 
-  }
-
-  return await doc
+  return await doc;
 };

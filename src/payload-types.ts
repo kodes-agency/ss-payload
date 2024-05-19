@@ -8,13 +8,15 @@
 
 export interface Config {
   collections: {
-    users: User;
-    pages: Page;
-    media: Media;
+    orders: Order;
     products: Product;
+    pages: Page;
     news: News;
     diary: Diary;
-    orders: Order;
+    media: Media;
+    messages: Message;
+    users: User;
+    payments: Payment;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -24,21 +26,250 @@ export interface Config {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "orders".
  */
-export interface User {
+export interface Order {
   id: string;
-  role?: ('editor' | 'admin') | null;
+  orderTotal?: string | null;
+  orderId?: string | null;
+  orderDate?: string | null;
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  customer_note?: string | null;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  country:
+    | 'AL'
+    | 'AD'
+    | 'AT'
+    | 'BY'
+    | 'BE'
+    | 'BA'
+    | 'BG'
+    | 'HR'
+    | 'CY'
+    | 'CZ'
+    | 'DK'
+    | 'EE'
+    | 'FI'
+    | 'FR'
+    | 'DE'
+    | 'GR'
+    | 'HU'
+    | 'IS'
+    | 'IE'
+    | 'IT'
+    | 'XK'
+    | 'LV'
+    | 'LI'
+    | 'LT'
+    | 'LU'
+    | 'MT'
+    | 'MD'
+    | 'MC'
+    | 'ME'
+    | 'NL'
+    | 'MK'
+    | 'NO'
+    | 'PL'
+    | 'PT'
+    | 'RO'
+    | 'RU'
+    | 'SM'
+    | 'RS'
+    | 'SK'
+    | 'SI'
+    | 'ES'
+    | 'SE'
+    | 'CH'
+    | 'UA'
+    | 'GB'
+    | 'VA';
+  city: string;
+  postcode?: string | null;
+  address_1: string;
+  address_2?: string | null;
+  products?:
+    | {
+        product: string | Product;
+        sku?: string | null;
+        quantity: number;
+        price_readOnly?: number | null;
+        price?: number | null;
+        total?: string | null;
+        isDiscounted?: boolean | null;
+        product_key?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  payment_method_title?: string | null;
+  transaction?: (string | null) | Payment;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password: string | null;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  systemTitle?: string | null;
+  productType: {
+    productType: 'single' | 'bundle' | 'other';
+    productPosition: 'catalog-only' | 'shop-only' | 'catalog-shop';
+  };
+  productTitle: string;
+  productKind: 'bottle' | 'bundle' | 'special' | 'other';
+  slug?: string | null;
+  productBasicInformation?: {
+    wineSort: 'white' | 'red' | 'rose' | 'collection';
+    harvestYear: string;
+    shortDescription: string;
+    longDescription: string;
+    img: string | Media;
+    passport?: string | Media | null;
+    wineAwards?:
+      | {
+          award?: string | null;
+          year?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  wineDetails?: {
+    alchoholContent?: number | null;
+    acidContent?: number | null;
+    sugarContent?: number | null;
+    temperatureC?: number | null;
+    temperatureF?: number | null;
+    bottleClosingType?: ('screwcap' | 'cork' | 'vinolok' | 'diam5') | null;
+    yearBottled?: string | null;
+    volumeAndQuantity?:
+      | {
+          volume?: number | null;
+          quantity?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  wineRemarks?: {
+    vinification?: string | null;
+    maturation?: string | null;
+    degustation?: string | null;
+    food?: string | null;
+  };
+  productBundle?:
+    | {
+        product: string | Product;
+        quantity: number;
+        id?: string | null;
+      }[]
+    | null;
+  productImage?: {
+    productImage?: string | Media | null;
+  };
+  stockGroup?: {
+    manageStock?: ('1' | '0') | null;
+  };
+  saleGroup?: {
+    onSale?: ('1' | '0') | null;
+  };
+  visibilityGroup?: {
+    visibility?: ('1' | '0') | null;
+  };
+  productId?: string | null;
+  priceManagement: {
+    regularPrice: number;
+    salePrice?: number | null;
+  };
+  stockManagement: {
+    stockQuantity?: number | null;
+    sku?: string | null;
+    volume: '375' | '750' | '1500' | '0';
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: string;
+  ACTION?: ('0' | '1' | '2' | '3' | '6' | '7' | '8' | '21') | null;
+  RC?:
+    | (
+        | '00'
+        | '-1'
+        | '-2'
+        | '-3'
+        | '-4'
+        | '-5'
+        | '-6'
+        | '-7'
+        | '-10'
+        | '-11'
+        | '-12'
+        | '-13'
+        | '-15'
+        | '-16'
+        | '-17'
+        | '-19'
+        | '-20'
+        | '-21'
+        | '-22'
+        | '-24'
+        | '-25'
+        | '-26'
+        | '-27'
+        | '-28'
+        | '-29'
+        | '-30'
+        | '-31'
+        | '-32'
+        | '-33'
+        | '-39'
+        | '-40'
+      )
+    | null;
+  STATUSMSG?: string | null;
+  AMOUNT?: string | null;
+  CURRENCY?: string | null;
+  ORDER?: string | null;
+  LANG?: string | null;
+  TIMESTAMP?: string | null;
+  TRAN_DATE?: string | null;
+  TRAN_TRTYPE?: string | null;
+  RRN?: string | null;
+  INT_REF?: string | null;
+  PARES_STATUS?: string | null;
+  AUTH_STEP_RES?: string | null;
+  DESC?: string | null;
+  CARDHOLDERINFO?: string | null;
+  ECI?: string | null;
+  CARD?: string | null;
+  CARD_BRAND?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -200,106 +431,6 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: string;
-  systemTitle?: string | null;
-  productType: {
-    productType: 'single' | 'bundle' | 'other';
-    productPosition: 'catalog-only' | 'shop-only' | 'catalog-shop';
-  };
-  productTitle: string;
-  productKind: 'bottle' | 'bundle' | 'special' | 'other';
-  slug?: string | null;
-  productBasicInformation?: {
-    wineSort: 'white' | 'red' | 'rose' | 'collection';
-    harvestYear: string;
-    shortDescription: string;
-    longDescription: string;
-    img: string | Media;
-    passport?: string | Media | null;
-    wineAwards?:
-      | {
-          award?: string | null;
-          year?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  wineDetails?: {
-    alchoholContent?: number | null;
-    acidContent?: number | null;
-    sugarContent?: number | null;
-    temperatureC?: number | null;
-    temperatureF?: number | null;
-    bottleClosingType?: ('screwcap' | 'cork' | 'vinolok' | 'diam5') | null;
-    yearBottled?: string | null;
-    volumeAndQuantity?:
-      | {
-          volume?: number | null;
-          quantity?: number | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  wineRemarks?: {
-    vinification?: string | null;
-    maturation?: string | null;
-    degustation?: string | null;
-    food?: string | null;
-  };
-  productBundle?:
-    | {
-        product: string | Product;
-        quantity: number;
-        id?: string | null;
-      }[]
-    | null;
-  productImage?: {
-    productImage?: string | Media | null;
-  };
-  stockGroup?: {
-    manageStock?: ('1' | '0') | null;
-  };
-  saleGroup?: {
-    onSale?: ('1' | '0') | null;
-  };
-  visibilityGroup?: {
-    visibility?: ('1' | '0') | null;
-  };
-  productId?: string | null;
-  priceManagement: {
-    regularPrice: number;
-    salePrice?: number | null;
-  };
-  stockManagement: {
-    stockQuantity?: number | null;
-    sku?: string | null;
-    volume: '375' | '750' | '1500' | '0';
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "news".
  */
 export interface News {
@@ -365,90 +496,38 @@ export interface Diary {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders".
+ * via the `definition` "messages".
  */
-export interface Order {
+export interface Message {
   id: string;
-  orderTotal?: string | null;
-  orderId?: string | null;
-  orderDate?: string | null;
-  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
-  customer_note?: string | null;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  country:
-    | 'AL'
-    | 'AD'
-    | 'AT'
-    | 'BY'
-    | 'BE'
-    | 'BA'
-    | 'BG'
-    | 'HR'
-    | 'CY'
-    | 'CZ'
-    | 'DK'
-    | 'EE'
-    | 'FI'
-    | 'FR'
-    | 'DE'
-    | 'GR'
-    | 'HU'
-    | 'IS'
-    | 'IE'
-    | 'IT'
-    | 'XK'
-    | 'LV'
-    | 'LI'
-    | 'LT'
-    | 'LU'
-    | 'MT'
-    | 'MD'
-    | 'MC'
-    | 'ME'
-    | 'NL'
-    | 'MK'
-    | 'NO'
-    | 'PL'
-    | 'PT'
-    | 'RO'
-    | 'RU'
-    | 'SM'
-    | 'RS'
-    | 'SK'
-    | 'SI'
-    | 'ES'
-    | 'SE'
-    | 'CH'
-    | 'UA'
-    | 'GB'
-    | 'VA';
-  state?: string | null;
-  city: string;
-  address_1: string;
-  address_2: string | null;
-  postcode?: string | null;
-  products?:
-    | {
-        product: string | Product;
-        sku?: string | null;
-        quantity: number;
-        price_readOnly?: number | null;
-        price?: number | null;
-        total?: string | null;
-        isDiscounted?: boolean | null;
-        product_key?: number | null;
-        id?: string | null;
-      }[]
-    | null;
-  payment_method_title?: string | null;
-  transaction_id?: string | null;
-  date_paid?: string | null;
+  contactName?: string | null;
+  companyName?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  message?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  role?: ('editor' | 'admin') | null;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
