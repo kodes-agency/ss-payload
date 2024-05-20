@@ -4,6 +4,7 @@ import { getTransactionData } from "../../../utilities/getTransactionData";
 import { Payment } from "payload/generated-types";
 import { OrderResponse } from "../../../types/orderType";
 import CustomAdminError from "../../../utilities/errorClasses";
+import { sendEmail } from "../../../utilities/email";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
@@ -18,13 +19,13 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
     });
 
     // @ts-expect-error
-    const { billing_address: billing, shipping_address: shipping, items } = doc.orderData;
+    const { billing_address: billing, shipping_address: shipping, items, customer_note } = doc.orderData;
     console.log('Order data'); // Log the order data
 
     const orderData = {
       status: "processing",
       paymnet_method: "other_payment",
-      customer_note: "note",
+      customer_note: customer_note,
       billing,
       shipping,
       line_items: items.map((orderItem) => ({
@@ -41,7 +42,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     const products = await getProducts(orderDataResponse, req);
 
-    await req.payload.create({
+    const payloadOrder = await req.payload.create({
       collection: "orders",
       data: {
         orderId: orderDataResponse.id,
@@ -59,8 +60,25 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
         city: orderDataResponse.billing.city,
         postcode: orderDataResponse.billing.postcode,
         products: products,
+        transaction: doc.id,
       },
     });
+
+    await sendEmail(
+      req,{
+      lang: doc.LANG,
+      operation: 'processing',
+      orderNumber: orderDataResponse.id,
+      firstName: orderDataResponse.billing.first_name,
+      lastName: orderDataResponse.billing.last_name,
+      email: orderDataResponse.billing.email,
+      phone: orderDataResponse.billing.phone,
+      orderTotal: orderDataResponse.total,
+      paymentMethod: 'Other Payment',
+      products: products,
+      orderLink: `https://api.santa-sarah.com/admin/collections/orders/${payloadOrder.id}`,
+    })
+
   } catch (error) {
     throw new CustomAdminError(
       error.response?.data?.message,
@@ -118,7 +136,6 @@ async function setTransactionRecords(
       ORDER: transactionData.ORDER,
       DESC: transactionData.DESC,
       TIMESTAMP: transactionData.TIMESTAMP,
-      LANG: transactionData.LANG,
       TRAN_TRTYPE: transactionData.TRAN_TRTYPE,
       RRN: transactionData.RRN,
       INT_REF: transactionData.INT_REF,
