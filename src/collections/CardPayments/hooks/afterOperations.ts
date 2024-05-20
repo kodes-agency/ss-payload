@@ -154,8 +154,6 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
         // If the transactionData.ACTION is one of the specified values, clear the interval
         if (!repeatCodes.includes(transactionData.RC)) {
           clearInterval(intervalId);
-          await setTransactionRecords(req, await doc, transactionData);
-          console.log("Transaction found");
         }
       };
 
