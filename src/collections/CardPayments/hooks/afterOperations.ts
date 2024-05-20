@@ -2,63 +2,97 @@ import { CollectionAfterChangeHook, PayloadRequest } from "payload/types";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 import { getTransactionData } from "../../../utilities/getTransactionData";
 import { Payment } from "payload/generated-types";
-import { OrderData } from "../../../types/orderType";
-
-
+import { OrderResponse } from "../../../types/orderType";
+import CustomAdminError from "../../../utilities/errorClasses";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
-async function createOrder(doc: Payment, req: PayloadRequest){
-
-  // @ts-expect-error
-  const products = await Promise.all(doc.orderData.items.map(async (orderItem) => {
-    const product = await req.payload.findByID({
-      collection: 'products',
-      id: orderItem.description.replace(/<\/?p>/g, '')
+async function createOrder(doc: Payment, req: PayloadRequest) {
+  try {
+    const WooCommerce = new WooCommerceRestApi({
+      url: validateEnvVar(process.env.PAYLOAD_PUBLIC_WOO_URL, 'PAYLOAD_PUBLIC_WOO_URL'),
+      consumerKey: validateEnvVar(process.env.PAYLOAD_PUBLIC_WOO_CONSUMER_KEY, 'PAYLOAD_PUBLIC_WOO_CONSUMER_KEY'),
+      consumerSecret: validateEnvVar(process.env.PAYLOAD_PUBLIC_WOO_CONSUMER_SECRET, 'PAYLOAD_PUBLIC_WOO_CONSUMER_SECRET'),
+      version: "wc/v3",
     });
 
-    // Return an object containing the product details
-    return {
-      product: product.id,
-      name: product.productTitle,
-      sku: orderItem.sku,
-      quantity: orderItem.quantity,
-      price_readOnly: Number(orderItem.prices.price),
-      price: Number(orderItem.prices.price),
-      total: orderItem.totals.total_price,
-      product_key: orderItem.id
-    };
-  }));
+    // @ts-expect-error
+    const { billing_address: billing, shipping_address: shipping, items } = doc.orderData;
 
-  const order = req.payload.create({
-    collection: "orders",
-    data: {
-      // @ts-ignore
-      first_name: doc.orderData.billing_address.first_name,
-      // @ts-ignore
-      last_name: doc.orderData.billing_address.last_name,
-      // @ts-ignore
-      email: doc.orderData.billing_address.email,
-      // @ts-ignore
-      phone: doc.orderData.billing_address.phone,
-      // @ts-ignore
-      address_1: doc.orderData.billing_address.address_1,
-      // @ts-ignore
-      address_2: doc.orderData.billing_address.address_2,
-      // @ts-ignore
-      country: doc.orderData.billing_address.country,
-      // @ts-ignore
-      city: doc.orderData.billing_address.city,
-      // @ts-ignore
-      postcode: doc.orderData.billing_address.postcode,
+    const orderData = {
       status: "processing",
-      // @ts-ignore
-      orderTotal: doc.orderData.totals.total_price,
-      // @ts-ignore
-      customer_note: doc.orderData.customer_note,
-      products: products
-    },
+      paymnet_method: "other_payment",
+      customer_note: "note",
+      billing,
+      shipping,
+      line_items: items.map((orderItem) => ({
+        product_id: orderItem.id,
+        quantity: orderItem.quantity,
+      })),
+      set_paid: false,
+    };
+
+    const order = await WooCommerce.post("orders", orderData);
+    const orderDataResponse: OrderResponse = order.data;
+
+    const products = await getProducts(orderDataResponse, req);
+
+    await req.payload.create({
+      collection: "orders",
+      data: {
+        orderId: orderDataResponse.id,
+        status: orderDataResponse.status,
+        orderDate: orderDataResponse.date_created,
+        orderTotal: orderDataResponse.total,
+        customer_note: orderDataResponse.customer_note,
+        first_name: orderDataResponse.billing.first_name,
+        last_name: orderDataResponse.billing.last_name,
+        email: orderDataResponse.billing.email,
+        phone: orderDataResponse.billing.phone,
+        address_1: orderDataResponse.billing.address_1,
+        address_2: orderDataResponse.billing.address_2,
+        country: orderDataResponse.billing.country,
+        city: orderDataResponse.billing.city,
+        postcode: orderDataResponse.billing.postcode,
+        products: products,
+      },
+    });
+  } catch (error) {
+    throw new CustomAdminError(
+      error.response?.data?.message,
+      error.response?.data?.data?.status
+    );
+  }
+}
+
+function validateEnvVar(variable: string | undefined, name: string): string {
+  if (!variable) {
+    throw new Error(`Environment variable ${name} is not set.`);
+  }
+  return variable;
+}
+
+async function getProducts(orderData: OrderResponse, req: PayloadRequest) {
+  const productsPromise = orderData.line_items.map(async (lineItem) => {
+    const productIds = await req.payload.find({
+      collection: "products",
+      where: {
+        productId: { equals: lineItem.product_id },
+      },
+    });
+
+    return {
+      product: productIds.docs[0].id,
+      sku: lineItem.sku,
+      quantity: lineItem.quantity,
+      price: lineItem.price,
+      price_readOnly: lineItem.price,
+      total: lineItem.total,
+      product_key: lineItem.id,
+    };
   });
+
+  return await Promise.all(productsPromise);
 }
 
 async function setTransactionRecords(
@@ -66,7 +100,7 @@ async function setTransactionRecords(
   doc: Payment,
   transactionData: Payment
 ) {
-  console.log(doc)
+
   await req.payload.update({
     req,
     collection: "payments",
@@ -93,21 +127,19 @@ async function setTransactionRecords(
     },
   });
 
-  if(transactionData.ACTION === "0" && transactionData.RC === "00") {
+  if (transactionData.ACTION === "0" && transactionData.RC === "00") {
     await createOrder(doc, req);
   }
 }
-
 
 export const afterOperationHook: CollectionAfterChangeHook = async ({
   doc, // arguments passed into the operation
   req,
   operation, // name of the operation
 }) => {
-
-  if (operation === "create" ) {
+  if (operation === "create") {
     const transactionData = await getTransactionData(doc.ORDER);
-    console.log("trying to update")
+    console.log("trying to update");
 
     if (repeatCodes.includes(transactionData.RC)) {
       let intervalId: NodeJS.Timeout;

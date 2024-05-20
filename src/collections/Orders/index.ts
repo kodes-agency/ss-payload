@@ -43,7 +43,7 @@ export const Orders: CollectionConfig = {
           },
         },
         {
-          type: "text",
+          type: "number",
           name: "orderId",
           label: "Поръчка №",
           admin: {

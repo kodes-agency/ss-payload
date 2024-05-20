@@ -31,7 +31,7 @@ export interface Config {
 export interface Order {
   id: string;
   orderTotal?: string | null;
-  orderId?: string | null;
+  orderId?: number | null;
   orderDate?: string | null;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
   customer_note?: string | null;
