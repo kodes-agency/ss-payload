@@ -43,6 +43,26 @@ export const Orders: CollectionConfig = {
           },
         },
         {
+          type: 'radio',
+          name: 'completed',
+          label: 'Завършена поръчка',
+          admin: {
+            readOnly: true,
+            hidden: true,
+          },
+          defaultValue: "0",
+          options: [
+            {
+              label: 'Да',
+              value: "1"
+            },
+            {
+              label: 'Не',
+              value: "0"
+            }
+          ]
+        },
+        {
           type: "number",
           name: "orderId",
           label: "Поръчка №",
@@ -313,14 +333,6 @@ export const Orders: CollectionConfig = {
             {
               type: "row",
               fields: [
-                {
-                  type: "text",
-                  name: "payment_method_title",
-                  label: "Метод на плащане",
-                  admin: {
-                    readOnly: true,
-                  },
-                },
                 {
                   type: "relationship",
                   name: "transaction",

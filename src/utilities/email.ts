@@ -317,7 +317,7 @@ function customerCompletedEmail({
                   <div class="body">
                       <p>${
                         lang === "bg" ? "Здравейте," : "Dear"
-                      } ${firstName} ${lastName}</p>
+                      } ${firstName} ${lastName},</p>
                       <p>${
                         lang === "bg"
                           ? `Вашата поръчка с номер №: ${orderNumber} e изпратена към Вас. Очаквайте я в най-кратък срок.`
@@ -508,7 +508,7 @@ function customerProccessingEmail({
                 <div class="body">
                     <p>${
                       lang === "bg" ? "Здравейте," : "Dear"
-                    } ${firstName} ${lastName}</p>
+                    } ${firstName} ${lastName},</p>
                     <p>${
                       lang === "bg"
                         ? "Благодарим Ви, че избрахте винарско имение Санта Сара. Номерът на Вашата поръчка е:"
@@ -695,10 +695,10 @@ function b2bCustomerEmail({
                   <div class="body">
                       <p>${
                         lang === "bg" ? "Здравейте," : "Dear"
-                      } ${name}</p>
+                      } ${name}!</p>
                       <p>${
                         lang === "bg"
-                          ? "Благодарим Ви, за интереса към винарско имение Санта Сара. "
+                          ? "Благодарим Ви за интереса към винарско имение Санта Сара. "
                           : "Thank you for your interest in Santa Sarah Wine Estate."
                       }
                       </p>
@@ -978,7 +978,7 @@ export async function sendEmail(
     }
 
     if (operation === "completed") {
-      // Implement the email template for completed orders
+    //   Implement the email template for completed orders
       const customerTemplate = customerCompletedEmail({
         lang,
         orderNumber,
@@ -1000,7 +1000,7 @@ export async function sendEmail(
           to: email,
           subject:
             lang === "bg"
-              ? "Вашата поръчка пътува към вас - Santa Sarah"
+              ? "Поръчката Ви пътува към Вас - Santa Sarah"
               : "Your order has been shipped - Santa Sarah",
           body: customerTemplate,
         }),

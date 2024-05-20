@@ -146,6 +146,7 @@ export const manageOrders: BeforeOperationHook = async ({
     
             return {
                 product_id: Number(productId.docs[0].productId),
+                product: productId.docs[0].id,
                 id: product.product_key,
                 quantity: product.quantity,
                 meta_data: [
@@ -188,23 +189,26 @@ export const manageOrders: BeforeOperationHook = async ({
     
         try {
             const response = await WooCommerce.put(`orders/${data.orderId}`, order);
-            let payment = payload.findByID({
-                collection: "payments",
-                id: data.transaction
-            });
-
-            await sendEmail(req, {
-                lang: payment.LANG,
-                operation: 'completed',
-                orderNumber: response.data.id,
-                firstName: response.data.billing.first_name,
-                lastName: response.data.billing.last_name,
-                email: response.data.billing.email,
-                phone: response.data.billing.phone,
-                orderTotal: response.data.total,
-                paymentMethod: 'Other Payment',
-                products: lineItems,
-            })
+            
+            if(data.status === "completed" && data.completed === "0") {
+                let payment = await payload.findByID({
+                    collection: "payments",
+                    id: data.transaction
+                });
+                await sendEmail(req, {
+                    lang: payment.LANG,
+                    operation: 'completed',
+                    orderNumber: response.data.id,
+                    firstName: response.data.billing.first_name,
+                    lastName: response.data.billing.last_name,
+                    email: response.data.billing.email,
+                    phone: response.data.billing.phone,
+                    orderTotal: response.data.total,
+                    paymentMethod: 'Other Payment',
+                    products: lineItems,
+                })
+                data.completed = "1";
+            }
 
 
             data.orderTotal = response.data?.total  + " лв.";
@@ -219,6 +223,7 @@ export const manageOrders: BeforeOperationHook = async ({
                     product_key: lineItem.id
                 }
             });
+
         } catch (error) {
             throw new CustomAdminError(error.response?.data?.message, error.response?.data?.data?.status);
         }
