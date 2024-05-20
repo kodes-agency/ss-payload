@@ -8,6 +8,7 @@ import CustomAdminError from "../../../utilities/errorClasses";
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
 async function createOrder(doc: Payment, req: PayloadRequest) {
+  console.log('createOrder function called'); // Log when the function is called
   try {
     const WooCommerce = new WooCommerceRestApi({
       url: validateEnvVar(process.env.PAYLOAD_PUBLIC_WOO_URL, 'PAYLOAD_PUBLIC_WOO_URL'),
@@ -18,6 +19,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     // @ts-expect-error
     const { billing_address: billing, shipping_address: shipping, items } = doc.orderData;
+    console.log('Order data:', doc.orderData); // Log the order data
 
     const orderData = {
       status: "processing",
@@ -32,7 +34,9 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
       set_paid: false,
     };
 
+    console.log('Sending order to WooCommerce'); // Log before sending the order
     const order = await WooCommerce.post("orders", orderData);
+    console.log('Order created:', order); // Log the created order
     const orderDataResponse: OrderResponse = order.data;
 
     const products = await getProducts(orderDataResponse, req);
