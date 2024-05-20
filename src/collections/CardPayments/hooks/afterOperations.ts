@@ -19,7 +19,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     // @ts-expect-error
     const { billing_address: billing, shipping_address: shipping, items } = doc.orderData;
-    console.log('Order data:', doc.orderData); // Log the order data
+    console.log('Order data'); // Log the order data
 
     const orderData = {
       status: "processing",
@@ -36,7 +36,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     console.log('Sending order to WooCommerce'); // Log before sending the order
     const order = await WooCommerce.post("orders", orderData);
-    console.log('Order created:', order); // Log the created order
+    console.log('Order created'); // Log the created order
     const orderDataResponse: OrderResponse = order.data;
 
     const products = await getProducts(orderDataResponse, req);
