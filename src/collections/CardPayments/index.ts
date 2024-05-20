@@ -19,7 +19,7 @@ export const CardPayments: CollectionConfig = {
     afterChange: [afterOperationHook]
   },
   admin: {
-    useAsTitle: "code",
+    useAsTitle: "ORDER",
     defaultColumns: ["ACTION, AMOUNT, createdAt, "],
   },
   fields: [
@@ -142,7 +142,7 @@ export const CardPayments: CollectionConfig = {
                   name: "ORDER",
                   label: "Поръчка №",
                   admin: {
-                    readOnly: false,
+                    readOnly: true,
                   },
                 },
                 {

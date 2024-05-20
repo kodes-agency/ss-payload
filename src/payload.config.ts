@@ -14,6 +14,7 @@ import { General } from './globals/General'
 import { Orders } from './collections/Orders'
 import { Messages } from './collections/Messages'
 import { CardPayments } from './collections/CardPayments'
+import CustomLink from './components/customLink'
 // import { WineType } from './collections/WineType'
 // import { WineCap } from './collections/WineCap'
 // import { ProductCategory } from './collections/ProductCategory'
@@ -23,6 +24,9 @@ import { CardPayments } from './collections/CardPayments'
 
 export default buildConfig({
   admin: {
+    components: {
+      afterNavLinks: [CustomLink]
+    },
     dateFormat: 'dd-MM-yyyy',
     user: Users.slug,
     bundler: webpackBundler(),

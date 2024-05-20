@@ -1,6 +1,7 @@
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 import CustomAdminError from "../../../utilities/errorClasses";
 import { BeforeOperationHook } from "payload/dist/collections/config/types";
+import { sendEmail } from "../../../utilities/email";
 
 
 export const manageOrders: BeforeOperationHook = async ({
@@ -14,6 +15,10 @@ export const manageOrders: BeforeOperationHook = async ({
         consumerSecret: process.env.PAYLOAD_PUBLIC_WOO_CONSUMER_SECRET,
         version: "wc/v3",
     })
+
+    if(operation === "create" && req.payloadAPI === "REST") {
+        throw new CustomAdminError("Създаването на поръчки не е възмижни, ограничения на използваните на палтежни методи", 403)
+    }
 
 
     // const lineCouponsPromises = data.coupons.map(async (coupon) => {
@@ -175,8 +180,7 @@ export const manageOrders: BeforeOperationHook = async ({
             billing: customerDetails,
             shipping: customerDetails,
             line_items: lineItems,
-            payment_method: "other_method",
-            transaction_id: data.transaction_id,
+            payment_method: "other_payment",
             set_paid: false,
         };
     
@@ -184,6 +188,25 @@ export const manageOrders: BeforeOperationHook = async ({
     
         try {
             const response = await WooCommerce.put(`orders/${data.orderId}`, order);
+            let payment = payload.findByID({
+                collection: "payments",
+                id: data.transaction
+            });
+
+            await sendEmail(req, {
+                lang: payment.LANG,
+                operation: 'completed',
+                orderNumber: response.data.id,
+                firstName: response.data.billing.first_name,
+                lastName: response.data.billing.last_name,
+                email: response.data.billing.email,
+                phone: response.data.billing.phone,
+                orderTotal: response.data.total,
+                paymentMethod: 'Other Payment',
+                products: lineItems,
+            })
+
+
             data.orderTotal = response.data?.total  + " лв.";
             data.products = data.products.map((product) => {
                 const lineItem = response.data.line_items.find((lineItem) => lineItem.meta_data[0].value == product.product)

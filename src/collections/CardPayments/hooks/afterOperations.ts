@@ -24,7 +24,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     const orderData = {
       status: "processing",
-      paymnet_method: "other_payment",
+      payment_method: "other_payment",
       customer_note: customer_note,
       billing,
       shipping,

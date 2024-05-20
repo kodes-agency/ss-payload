@@ -1,10 +1,14 @@
 import type { CollectionConfig } from 'payload/types'
+import { afterChange } from './hooks/afterCreate'
 
 export const Messages: CollectionConfig = {
     slug: 'messages',
     labels: {
       singular: 'Съобщение',
       plural: 'Съобщения',
+    },
+    hooks: {
+      afterChange: [afterChange],
     },
     access: {
       create: () => true,
