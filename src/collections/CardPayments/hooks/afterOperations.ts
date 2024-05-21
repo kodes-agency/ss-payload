@@ -5,8 +5,29 @@ import { Payment } from "payload/generated-types";
 import { OrderResponse } from "../../../types/orderType";
 import CustomAdminError from "../../../utilities/errorClasses";
 import { sendEmail } from "../../../utilities/email";
+import { CartType } from "../../../types/cartType";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
+
+async function deleteCartItems(doc: Payment){
+  // @ts-ignore
+  let order: CartType = doc.orderData
+
+  const cartItemsPromise = order.items.map(async (item) => {
+    return fetch(process.env.PUBLIC_SHOP_API_URL + `/cart/remove-item?key=${item.key}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // @ts-ignore
+        Nonce: `${doc.orderData.nonce}`,
+        // @ts-ignore
+        "Cart-token": `${doc.orderData.cartToken}`,
+      }
+    })
+  })
+
+  await Promise.all(cartItemsPromise)
+}
 
 async function createOrder(doc: Payment, req: PayloadRequest) {
   console.log('createOrder function called'); // Log when the function is called
@@ -79,6 +100,8 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
       products: products,
       orderLink: `https://api.santa-sarah.com/admin/collections/orders/${payloadOrder.id}`,
     })
+
+    await deleteCartItems(doc);
 
   } catch (error) {
     throw new CustomAdminError(
