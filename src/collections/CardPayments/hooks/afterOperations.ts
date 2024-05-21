@@ -124,6 +124,8 @@ async function setTransactionRecords(
   transactionData: Payment
 ) {
 
+  console.log(doc.orderData)
+
   await req.payload.update({
     req,
     collection: "payments",
