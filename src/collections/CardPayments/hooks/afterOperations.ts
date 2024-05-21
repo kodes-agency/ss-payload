@@ -13,7 +13,7 @@ async function deleteCartItems(doc: Payment){
   // @ts-ignore
   let order: CartType = doc.orderData
 
-  const cartItemsPromise = order.items.map(async (item) => {
+  const cartItemsPromises = order.items.map((item) => {
     return fetch(process.env.PUBLIC_SHOP_API_URL + `/cart/remove-item?key=${item.key}`, {
       method: 'POST',
       headers: {
@@ -23,10 +23,13 @@ async function deleteCartItems(doc: Payment){
         // @ts-ignore
         "Cart-token": `${doc.orderData.cartToken}`,
       }
-    })
-  })
+    }).then(response => response.json());
+  });
+  
+  const cartItemsResponses = await Promise.all(cartItemsPromises);
 
-  await Promise.all(cartItemsPromise)
+  console.log(cartItemsResponses)
+
 }
 
 async function createOrder(doc: Payment, req: PayloadRequest) {
