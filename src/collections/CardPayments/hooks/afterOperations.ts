@@ -55,7 +55,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
         email: orderDataResponse.billing.email,
         phone: orderDataResponse.billing.phone,
         address_1: orderDataResponse.billing.address_1,
-        address_2: orderDataResponse.billing.address_2,
+        address_2: orderDataResponse.billing.address_2 ? `Наименование: ${orderDataResponse.billing.address_2}, \n ЕИК: ${orderDataResponse.billing.company}, \n Държава нарегистрация: ${orderDataResponse.shipping.address_2}, \n Адрес на регистрация: ${orderDataResponse.shipping.company}` : "",
         country: orderDataResponse.billing.country,
         city: orderDataResponse.billing.city,
         postcode: orderDataResponse.billing.postcode,
