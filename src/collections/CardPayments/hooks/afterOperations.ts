@@ -150,8 +150,6 @@ async function setTransactionRecords(
   transactionData: Payment
 ) {
 
-  console.log(doc.orderData)
-
   await req.payload.update({
     req,
     collection: "payments",
@@ -189,17 +187,18 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
 }) => {
   if (operation === "create") {
     const transactionData = await getTransactionData(doc.ORDER);
-    console.log("trying to update");
+    console.log("Transaction data received.");
 
     if (repeatCodes.includes(transactionData.RC)) {
       let intervalId: NodeJS.Timeout;
       const checkTransactionData = async () => {
         const transactionData = await getTransactionData(doc.ORDER);
         await setTransactionRecords(req, await doc, transactionData);
-        console.log("Waiting for transaction data");
+        console.log("Transaction RC is in the repeatCodes array. Checking again in 20 seconds.");
         // If the transactionData.ACTION is one of the specified values, clear the interval
         if (!repeatCodes.includes(transactionData.RC)) {
           clearInterval(intervalId);
+          console.log("Thansaction RC is not in the repeatCodes array. Transaction recorded!")
         }
       };
 
@@ -213,7 +212,7 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
       }, 900000);
     } else {
       await setTransactionRecords(req, await doc, transactionData);
-      console.log("Transaction is not -40 or -24 or -33 or -31");
+      console.log("Transaction RC is not in the repeatCodes array. Transaction recorded without looping!");
     }
   }
 
