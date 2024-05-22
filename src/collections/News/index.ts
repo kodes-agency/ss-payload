@@ -48,21 +48,21 @@ export const News: CollectionConfig = {
           slugField,
         ]
       },
-      // {
-      //   name: 'text',
-      //   label: 'Текст',
-      //   type: 'richText',
-      //   localized: true,
-      //   required: true,
-      //   editor: lexicalEditor({
-      //     features: ({ defaultFeatures }) => [
-      //       ...defaultFeatures,
-      //       // The HTMLConverter Feature is the feature which manages the HTML serializers. If you do not pass any arguments to it, it will use the default serializers.
-      //       HTMLConverterFeature({}),
-      //     ],
-      //   }),
-      // },
-      // lexicalHTML('text', { name: 'text_html' }),
+      {
+        name: 'text',
+        label: 'Текст',
+        type: 'richText',
+        localized: true,
+        required: true,
+        editor: lexicalEditor({
+          features: ({ defaultFeatures }) => [
+            ...defaultFeatures,
+            // The HTMLConverter Feature is the feature which manages the HTML serializers. If you do not pass any arguments to it, it will use the default serializers.
+            HTMLConverterFeature({}),
+          ],
+        }),
+      },
+      lexicalHTML('text', { name: 'text_html' }),
       {
         type: 'array',
         name: 'images',

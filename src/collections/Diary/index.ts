@@ -55,20 +55,20 @@ export const Diary: CollectionConfig = {
         relationTo: 'media',
         required: true,
       },
-      // {
-      //   name: 'text',
-      //   localized: true,
-      //   label: 'Текст',
-      //   type: 'richText',
-      //   required: true,
-      //   editor: lexicalEditor({
-      //     features: ({ defaultFeatures }) => [
-      //       ...defaultFeatures,
-      //       // The HTMLConverter Feature is the feature which manages the HTML serializers. If you do not pass any arguments to it, it will use the default serializers.
-      //       HTMLConverterFeature({}),
-      //     ],
-      //   }),
-      // },
-      // lexicalHTML('text', { name: 'text_html' }),
+      {
+        name: 'text',
+        localized: true,
+        label: 'Текст',
+        type: 'richText',
+        required: true,
+        editor: lexicalEditor({
+          features: ({ defaultFeatures }) => [
+            ...defaultFeatures,
+            // The HTMLConverter Feature is the feature which manages the HTML serializers. If you do not pass any arguments to it, it will use the default serializers.
+            HTMLConverterFeature({}),
+          ],
+        }),
+      },
+      lexicalHTML('text', { name: 'text_html' }),
     ],
 }
