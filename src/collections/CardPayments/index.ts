@@ -8,8 +8,6 @@ export const CardPayments: CollectionConfig = {
   access: {
     create: () => true,
     read: () => true,
-    update: () => true,
-    delete: () => true,
   },
   labels: {
     singular: "Плащане с карта",
@@ -20,7 +18,7 @@ export const CardPayments: CollectionConfig = {
   },
   admin: {
     useAsTitle: "ORDER",
-    defaultColumns: ["ACTION, AMOUNT, createdAt, "],
+    defaultColumns: ["ACTION, AMOUNT, createdAt"],
   },
   fields: [
     {
