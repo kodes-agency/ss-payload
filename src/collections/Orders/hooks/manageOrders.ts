@@ -204,7 +204,7 @@ export const manageOrders: BeforeOperationHook = async ({
                     email: response.data.billing.email,
                     phone: response.data.billing.phone,
                     orderTotal: response.data.total,
-                    paymentMethod: 'Other Payment',
+                    paymentMethod: 'Credit/Debit card',
                     products: lineItems,
                 })
                 data.completed = "1";

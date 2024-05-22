@@ -80,7 +80,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
         email: orderDataResponse.billing.email,
         phone: orderDataResponse.billing.phone,
         address_1: orderDataResponse.billing.address_1,
-        address_2: orderDataResponse.billing.address_2 ? `Наименование: ${orderDataResponse.billing.address_2}, \nЕИК: ${orderDataResponse.billing.company}, \nДържава нарегистрация: ${orderDataResponse.shipping.address_2}, \nАдрес на регистрация: ${orderDataResponse.shipping.company}` : "",
+        address_2: orderDataResponse.billing.address_2 ? `Наименование: ${orderDataResponse.billing.address_2}, \nЕИК: ${orderDataResponse.billing.company}, \nДържава на регистрация: ${orderDataResponse.shipping.address_2}, \nАдрес на регистрация: ${orderDataResponse.shipping.company}` : "",
         country: orderDataResponse.billing.country,
         city: orderDataResponse.billing.city,
         postcode: orderDataResponse.billing.postcode,
@@ -99,7 +99,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
       email: orderDataResponse.billing.email,
       phone: orderDataResponse.billing.phone,
       orderTotal: orderDataResponse.total,
-      paymentMethod: 'Other Payment',
+      paymentMethod: 'Credit/Debit card',
       products: products,
       orderLink: `https://api.santa-sarah.com/admin/collections/orders/${payloadOrder.id}`,
     })
