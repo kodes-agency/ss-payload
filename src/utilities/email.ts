@@ -935,19 +935,19 @@ export async function sendEmail(
         }),
       });
 
-      //   const adminEmailRequest2 = await fetch(process.env.EMAIL_API_URL, {
-      //     // Use environment variable for URL
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       from: "evgeniya.g@santa-sarah.com",
-      //       to: "genowski@santa-sarah.com",
-      //       subject: "Имате нова поръчка с номер: " + orderNumber,
-      //       body: adminTemplate,
-      //     }),
-      //   });
+        const adminEmailRequest2 = await fetch(process.env.EMAIL_API_URL, {
+          // Use environment variable for URL
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "evgeniya.g@santa-sarah.com",
+            to: "evgeniya.g@santa-sarah.com",
+            subject: "Имате нова поръчка с номер: " + orderNumber,
+            body: adminTemplate,
+          }),
+        });
 
       const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
         // Use environment variable for URL
@@ -1040,7 +1040,7 @@ export async function sendEmail(
             },
             body: JSON.stringify({
                 from: "evgeniya.g@santa-sarah.com",
-                to: "denev@kodes.agency",
+                to: "evgeniya.g@santa-sarah.com",
                 subject: "Имате нова B2B заявка - Santa Sarah",
                 body: adminTemplate,
             }),
