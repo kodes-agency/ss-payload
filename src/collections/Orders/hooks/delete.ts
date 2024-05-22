@@ -10,7 +10,7 @@ export const deleteOrder: CollectionBeforeDeleteHook = async ({ req, id }) => {
     version: "wc/v3",
   });
 
-  throw new CustomAdminError("Изтриването на поръчки не е разрешено, спрямо изискванията на НАП", 403);
+  // throw new CustomAdminError("Изтриването на поръчки не е разрешено, спрямо изискванията на НАП", 403);
 
   let order = await req.payload.find({
     collection: "orders",

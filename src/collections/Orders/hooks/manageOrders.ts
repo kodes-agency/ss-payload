@@ -17,7 +17,7 @@ export const manageOrders: BeforeOperationHook = async ({
     })
 
     if(operation === "create" && req.payloadAPI === "REST") {
-        throw new CustomAdminError("Създаването на поръчки не е възмижни, ограничения на използваните на палтежни методи", 403)
+        throw new CustomAdminError("Създаването на поръчки не е възможно поради ограничения произлизащи от използваните палтежни методи", 403)
     }
 
 
