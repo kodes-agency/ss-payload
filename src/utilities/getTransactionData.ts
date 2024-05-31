@@ -39,7 +39,7 @@ export async function getTransactionData(order) {
         P_SIGN: signature.toUpperCase(),
       };
   
-      const request = await fetch(process.env.BORICA_DEV_GATEWAY, {
+      const request = await fetch(process.env.BORICA_PRODUCTION_GATEWAY, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
