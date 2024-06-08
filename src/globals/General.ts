@@ -788,6 +788,16 @@ export const General: GlobalConfig = {
                   localized: true,
                   required: true,
                 },
+                {
+                  type: 'textarea',
+                  admin: {
+                    width: '50%'
+                  },
+                  name: 'minumumItemsText',
+                  label: 'Текст - минимално количество',
+                  localized: true,
+                  required: true,
+                },
               ]
             }
           ]
