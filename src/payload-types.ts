@@ -31,6 +31,7 @@ export interface Config {
 export interface Order {
   id: string;
   orderTotal?: string | null;
+  completed?: ('1' | '0') | null;
   orderId?: number | null;
   orderDate?: string | null;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
@@ -103,7 +104,6 @@ export interface Order {
         id?: string | null;
       }[]
     | null;
-  payment_method_title?: string | null;
   transaction?: (string | null) | Payment;
   updatedAt: string;
   createdAt: string;
@@ -251,6 +251,37 @@ export interface Payment {
         | '-33'
         | '-39'
         | '-40'
+        | '01'
+        | '04'
+        | '05'
+        | '06'
+        | '12'
+        | '13'
+        | '14'
+        | '15'
+        | '17'
+        | '30'
+        | '35'
+        | '36'
+        | '37'
+        | '38'
+        | '39'
+        | '40'
+        | '41'
+        | '42'
+        | '43'
+        | '54'
+        | '55'
+        | '56'
+        | '57'
+        | '58'
+        | '59'
+        | '85'
+        | '88'
+        | '89'
+        | '91'
+        | '95'
+        | '96'
       )
     | null;
   STATUSMSG?: string | null;
@@ -324,6 +355,7 @@ export interface Page {
               | {
                   text: {
                     root: {
+                      type: string;
                       children: {
                         type: string;
                         version: number;
@@ -332,7 +364,6 @@ export interface Page {
                       direction: ('ltr' | 'rtl') | null;
                       format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
                       indent: number;
-                      type: string;
                       version: number;
                     };
                     [k: string]: unknown;
@@ -359,6 +390,7 @@ export interface Page {
                   title?: string | null;
                   text?: {
                     root: {
+                      type: string;
                       children: {
                         type: string;
                         version: number;
@@ -367,7 +399,6 @@ export interface Page {
                       direction: ('ltr' | 'rtl') | null;
                       format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
                       indent: number;
-                      type: string;
                       version: number;
                     };
                     [k: string]: unknown;
@@ -451,6 +482,7 @@ export interface News {
   slug?: string | null;
   text: {
     root: {
+      type: string;
       children: {
         type: string;
         version: number;
@@ -459,7 +491,6 @@ export interface News {
       direction: ('ltr' | 'rtl') | null;
       format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
-      type: string;
       version: number;
     };
     [k: string]: unknown;
@@ -487,6 +518,7 @@ export interface Diary {
   img: string | Media;
   text: {
     root: {
+      type: string;
       children: {
         type: string;
         version: number;
@@ -495,7 +527,6 @@ export interface Diary {
       direction: ('ltr' | 'rtl') | null;
       format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
-      type: string;
       version: number;
     };
     [k: string]: unknown;
@@ -686,6 +717,7 @@ export interface General {
     deliveryMethodsButton: string;
     buttonAddToCart: string;
     buttonLearnMore: string;
+    minumumItemsText: string;
     infoTabs: {
       title: string;
       content: string;

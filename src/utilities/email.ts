@@ -928,7 +928,7 @@ export async function sendEmail(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "evgeniya.g@santa-sarah.com",
+          from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
           to: "denev@kodes.agency",
           subject: "Имате нова поръчка с номер: " + orderNumber,
           body: adminTemplate,
@@ -942,7 +942,7 @@ export async function sendEmail(
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "evgeniya.g@santa-sarah.com",
+            from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
             to: "evgeniya.g@santa-sarah.com",
             subject: "Имате нова поръчка с номер: " + orderNumber,
             body: adminTemplate,
@@ -956,7 +956,7 @@ export async function sendEmail(
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "evgeniya.g@santa-sarah.com",
+              from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
               to: "genowski@santa-sarah.com",
               subject: "Имате нова поръчка с номер: " + orderNumber,
               body: adminTemplate,
@@ -970,7 +970,7 @@ export async function sendEmail(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "evgeniya.g@santa-sarah.com",
+          from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
           to: email,
           subject:
             lang === "bg"
@@ -1010,7 +1010,7 @@ export async function sendEmail(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "evgeniya.g@santa-sarah.com",
+          from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
           to: email,
           subject:
             lang === "bg"
@@ -1053,7 +1053,7 @@ export async function sendEmail(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                from: "evgeniya.g@santa-sarah.com",
+                from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
                 to: "evgeniya.g@santa-sarah.com",
                 subject: "Имате нова B2B заявка - Santa Sarah",
                 body: adminTemplate,
@@ -1067,7 +1067,7 @@ export async function sendEmail(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                from: "evgeniya.g@santa-sarah.com",
+                from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
                 to: email,
                 subject:             
                 lang === "bg"
