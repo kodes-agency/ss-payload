@@ -22,11 +22,11 @@ export async function getTransactionData(order) {
   
       let privateKey = process.env.BORICA_DEV_PRIVATE_KEY;
   
-      let decodedPrivateKey = Buffer.from(privateKey, "base64").toString("utf-8");
+      // let decodedPrivateKey = Buffer.from(privateKey, "base64").toString("utf-8");
   
       // Sign the data and convert it to a hex string
       const signature = sign.sign(
-        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
+        { key: process.env.BORICA_DEV_PRIVATE_KEY, passphrase: process.env.BORICA_DEV_PASSPHRASE },
         "hex"
       );
   
