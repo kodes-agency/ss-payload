@@ -20,13 +20,19 @@ export async function getTransactionData(order) {
       //   // Update the sign object with the P_SIGN data
       sign.update(P_SIGN);
   
-      let privateKey = process.env.BORICA_DEV_PRIVATE_KEY;
+      // const encode = Buffer.from(BORICA_DEV_PRIVATE_KEY).toString('base64');
+
+      const decodedPrivateKey = Buffer.from(process.env.BORICA_DEV_PRIVATE_KEY, 'base64').toString('utf-8');
+      
   
       // let decodedPrivateKey = Buffer.from(privateKey, "base64").toString("utf-8");
+      // let decodedPrivateKey = btoa(privateKey).toString();
+
+      // console.log(decodedPrivateKey)
   
       // Sign the data and convert it to a hex string
       const signature = sign.sign(
-        { key: process.env.BORICA_DEV_PRIVATE_KEY, passphrase: process.env.BORICA_DEV_PASSPHRASE },
+        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
         "hex"
       );
   
