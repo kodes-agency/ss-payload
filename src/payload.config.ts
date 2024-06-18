@@ -45,7 +45,7 @@ export default buildConfig({
       },
   },
   editor: lexicalEditor(),
-  collections: [ Orders, Products, Pages, News, Diary, Media , Messages, Users, CardPayments],
+  collections: [ Orders, Products, Pages, News, Diary, CardPayments, Messages, Media, Users],
   globals: [General],
   localization: {
     locales: ['bg', 'en', 'de'],

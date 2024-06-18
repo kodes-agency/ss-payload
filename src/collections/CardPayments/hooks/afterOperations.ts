@@ -5,7 +5,6 @@ import { Payment } from "payload/generated-types";
 import { OrderResponse } from "../../../types/orderType";
 import CustomAdminError from "../../../utilities/errorClasses";
 import { sendEmail } from "../../../utilities/email";
-import { CartType } from "../../../types/cartType";
 
 const repeatCodes = ["-40", "-33", "-31", "-24"];
 
