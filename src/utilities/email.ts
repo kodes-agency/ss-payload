@@ -13,7 +13,7 @@ async function getProducts(products: any, req: PayloadRequest, locale: string) {
         payloadProduct.productType.productType === "single"
           ? payloadProduct.productTitle +
             " " +
-            payloadProduct.productBasicInformation.harvestYear +
+            new Date(payloadProduct.productBasicInformation.harvestYear).getFullYear() +
             " " +
             payloadProduct.stockManagement.volume +
             " ml"
