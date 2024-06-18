@@ -24,7 +24,7 @@ export async function getTransactionData(order) {
           
       // Sign the data and convert it to a hex string
       const signature = sign.sign(
-        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE_2 },
+        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
         "hex"
       );
   
