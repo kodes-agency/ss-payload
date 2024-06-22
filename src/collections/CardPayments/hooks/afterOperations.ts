@@ -8,9 +8,13 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
   operation, // name of the operation
 }) => {
   if (operation === "create") {
-    validateOrderData(doc);
-    await checkAndUpdateTransaction(req, doc.ORDER);
+    try {
+      validateOrderData(doc);
+      await checkAndUpdateTransaction(req, doc.ORDER);
+      return doc;
+    }
+    catch (error) {
+      console.error("Error processing transaction for order:", doc.ORDER, error);
+    }
   }
-
-  return await doc;
 };
