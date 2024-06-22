@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import { afterOperationHook } from "./hooks/afterOperations";
+import { afterChange } from "./hooks/afterChange";
 
 // ACTION, RC, STATUSMSG, AMOUNT, CURRENCY, ORDER, LANG, TIMESTAMP, TRAN_DATE, TRAN_TRTYPE, RRN, INT_REF, PARES_STATUS, AUTH_STEP_RES, CARDHOLDERINFO, ECI, CARD, CARD_BRAND,
 
@@ -14,7 +14,7 @@ export const CardPayments: CollectionConfig = {
     plural: "Плащания с карта",
   },
   hooks: {
-    afterChange: [afterOperationHook]
+    afterChange: [afterChange]
   },
   admin: {
     useAsTitle: "ORDER",
@@ -106,7 +106,6 @@ export const CardPayments: CollectionConfig = {
             { label: "Трансакцията е в процес на аутентикация на картодържателя", value: "-33" },
             { label: "Искане за потвърждаване на клиента", value: "-39" },
             { label: "Искане за потвърждаване на трансакцията", value: "-40" },
-            { label: "Successfully completed", value: "00" },
             { label: "Refer to card issuer", value: "01" },
             { label: "PICK UP", value: "04" },
             { label: "Do not Honour", value: "05" },

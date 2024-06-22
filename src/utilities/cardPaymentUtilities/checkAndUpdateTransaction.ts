@@ -1,9 +1,11 @@
+import { PayloadRequest } from "payload/types";
 import { getBoricaData } from "./getBoricaData";
 import { updateCardPayments } from "./updateCardPayments";
+import { Payment } from "payload/generated-types";
 
 const repeatCodes = ["-40", "-39", "-33", "-31"];
 
-export async function checkAndUpdateTransaction(req, doc) {
+export async function checkAndUpdateTransaction(req: PayloadRequest, doc: Payment) {
   const order = doc.ORDER;
   try {
     const transactionData = await getBoricaData(order);
