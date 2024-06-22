@@ -2,7 +2,7 @@ import { ValidationError } from "payload/errors";
 
 
 export function validateOrderData(doc: any) {
-    if (typeof doc.ORDER !== 'string' || doc.ORDER.length !== 5) {
+    if (doc.ORDER) {
       throw new ValidationError([
         {
           field: 'ORDER',
