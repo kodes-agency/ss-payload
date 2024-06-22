@@ -20,11 +20,11 @@ export async function getTransactionData(order) {
       sign.update(P_SIGN);
   
       // const encode = Buffer.from(BORICA_DEV_PRIVATE_KEY).toString('base64');
-      const decodedPrivateKey = Buffer.from(process.env.BORICA_PRODUCTION_PRIVATE_KEY, 'base64').toString('utf-8');
+      const decodedPrivateKey = Buffer.from(process.env.BORICA_DEV_PRIVATE_KEY, 'base64').toString('utf-8');
           
       // Sign the data and convert it to a hex string
       const signature = sign.sign(
-        { key: decodedPrivateKey, passphrase: process.env.BORICA_PRODUCTION_PASSPHRASE },
+        { key: decodedPrivateKey, passphrase: process.env.BORICA_DEV_PASSPHRASE },
         "hex"
       );
   
@@ -37,7 +37,7 @@ export async function getTransactionData(order) {
         P_SIGN: signature.toUpperCase(),
       };
   
-      const request = await fetch(process.env.BORICA_PRODUCTION_GATEWAY, {
+      const request = await fetch(process.env.BORICA_DEV_GATEWAY, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
