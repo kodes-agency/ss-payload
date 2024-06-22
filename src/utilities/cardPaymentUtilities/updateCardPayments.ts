@@ -1,8 +1,8 @@
 import { Payment } from "payload/generated-types";
 import { PayloadRequest } from "payload/types";
-import CustomAdminError from "../../utilities/errorClasses";
+import CustomAdminError from "../errorClasses";
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
-import { sendEmail } from "../../utilities/email";
+import { sendEmail } from "../email";
 import { OrderResponse } from "../../types/orderType";
 
 // Helper function to validate environment variables
