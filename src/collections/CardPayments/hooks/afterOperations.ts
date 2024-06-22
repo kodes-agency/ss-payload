@@ -10,7 +10,7 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
   if (operation === "create") {
     try {
       validateOrderData(doc);
-      await checkAndUpdateTransaction(req, doc.ORDER);
+      await checkAndUpdateTransaction(req, doc);
       return doc;
     }
     catch (error) {

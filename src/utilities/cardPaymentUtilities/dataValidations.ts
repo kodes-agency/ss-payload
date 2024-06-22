@@ -2,7 +2,7 @@ import { ValidationError } from "payload/errors";
 
 
 export function validateOrderData(doc: any) {
-    if (doc.ORDER) {
+    if(!doc.ORDER) {
       throw new ValidationError([
         {
           field: 'ORDER',

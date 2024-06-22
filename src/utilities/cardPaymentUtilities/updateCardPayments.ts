@@ -23,6 +23,7 @@ const WooCommerce = new WooCommerceRestApi({
 
 // Function to get products from the order data
 async function getProducts(orderData: OrderResponse, req: PayloadRequest) {
+  console.log('getProducts function called');
   const productsPromise = orderData.line_items.map(async (lineItem) => {
     const productIds = await req.payload.find({
       collection: "products",
@@ -132,7 +133,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 export async function updateCardPayments(
   req: PayloadRequest,
   doc: Payment,
-  transactionData: Payment
+  transactionData: any
 ) {
   await req.payload.update({
     req,

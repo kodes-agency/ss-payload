@@ -3,7 +3,8 @@ import { updateCardPayments } from "./updateCardPayments";
 
 const repeatCodes = ["-40", "-39", "-33", "-31"];
 
-export async function checkAndUpdateTransaction(req, order) {
+export async function checkAndUpdateTransaction(req, doc) {
+  const order = doc.ORDER;
   try {
     const transactionData = await getBoricaData(order);
     console.log("Transaction data received for order:", order);
@@ -17,7 +18,7 @@ export async function checkAndUpdateTransaction(req, order) {
         if (!repeatCodes.includes(updatedTransactionData.RC)) {
           clearInterval(intervalId);
           console.log(`Transaction RC (${updatedTransactionData.RC}) is not in the repeatCodes array anymore. Transaction recorded!`);
-          await updateCardPayments(req, order, updatedTransactionData);
+          await updateCardPayments(req, doc, updatedTransactionData);
         }
       }, 20000);
 
@@ -26,7 +27,7 @@ export async function checkAndUpdateTransaction(req, order) {
         console.log("Interval cleared after 15 minutes for order:", order);
       }, 900000);
     } else {
-      await updateCardPayments(req, order, transactionData);
+      await updateCardPayments(req, doc, transactionData);
       console.log(`Transaction RC (${transactionData.RC}) is not in the repeatCodes array. Transaction recorded without looping!`);
     }
   } catch (error) {
