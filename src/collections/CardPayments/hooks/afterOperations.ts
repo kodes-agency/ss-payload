@@ -5,8 +5,9 @@ import { Payment } from "payload/generated-types";
 import { OrderResponse } from "../../../types/orderType";
 import CustomAdminError from "../../../utilities/errorClasses";
 import { sendEmail } from "../../../utilities/email";
+import { ValidationError } from "payload/errors";
 
-const repeatCodes = ["-40", "-33", "-31", "-24"];
+const repeatCodes = ["-40", "-39", "-33", "-31"];
 
 // async function deleteCartItems(doc: Payment){
 //   // @ts-ignore
@@ -185,19 +186,41 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
   operation, // name of the operation
 }) => {
   if (operation === "create") {
+
+    if(typeof doc.ORDER !== 'string' || doc.ORDER.length !== 5) throw new ValidationError([
+      {
+        field: 'ORDER',
+        message: 'ORDER must be a string with a length of 5 characters.'
+      }
+    ]);
+
+    if(!doc.orderData 
+      || doc.orderData.billing_address.first_name.length === 0 
+      || doc.orderData.billing_address.last_name.length === 0
+      || doc.orderData.billing_address.email.length === 0
+      || doc.orderData.billing_address.phone.length === 0
+    ) throw new ValidationError([
+      {
+        field: 'orderData',
+        message: 'orderData must be an object with billing_address object with first_name, last_name, email and phone fields.'
+      }
+    ]);
+
+    
     const transactionData = await getTransactionData(doc.ORDER);
     console.log("Transaction data received.");
 
-    if (repeatCodes.includes(transactionData.RC)) {
+    if (transactionData.RC.includes("-")) {
       let intervalId: NodeJS.Timeout;
       const checkTransactionData = async () => {
         const transactionData = await getTransactionData(doc.ORDER);
+
         await setTransactionRecords(req, await doc, transactionData);
-        console.log("Transaction RC is in the repeatCodes array. Checking again in 20 seconds.");
+        console.log(`Transaction RC is in the repeatCodes array. Checking again in 20 seconds. Status code: ${transactionData.RC}`);
         // If the transactionData.ACTION is one of the specified values, clear the interval
-        if (!repeatCodes.includes(transactionData.RC)) {
+        if (!transactionData.RC.includes("-")) {
           clearInterval(intervalId);
-          console.log("Thansaction RC is not in the repeatCodes array. Transaction recorded!")
+          console.log(`Thansaction RC is not in the repeatCodes array. Transaction recorded! Status code: ${transactionData.RC}`)
         }
       };
 
@@ -211,7 +234,7 @@ export const afterOperationHook: CollectionAfterChangeHook = async ({
       }, 900000);
     } else {
       await setTransactionRecords(req, await doc, transactionData);
-      console.log("Transaction RC is not in the repeatCodes array. Transaction recorded without looping!");
+      console.log(`Transaction RC is not in the repeatCodes array. Transaction recorded without looping! Status code: ${transactionData.RC}`);
     }
   }
 
