@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 
-export async function getTransactionData(order) {
+export async function getBoricaData(order) {
     const TERMINAL = process.env.BORICA_TERMINAL;
     const TRTYPE = "90";
     const ORDER = order;
