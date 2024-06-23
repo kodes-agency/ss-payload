@@ -18,12 +18,12 @@ export async function checkAndUpdateTransaction(req: PayloadRequest, doc: Paymen
         const updatedTransactionData = await getBoricaData(order);
         console.log(`Checking transaction for order: ${order}. Status code: ${updatedTransactionData.RC}`);
 
-        if (!transactionData.RC.includes("-")) {
+        if (!updatedTransactionData.RC.includes("-")) {
           clearInterval(intervalId);
           console.log(`Transaction RC (${updatedTransactionData.RC}) is not in the repeatCodes array anymore. Transaction recorded!`);
           await updateCardPayments(req, doc, updatedTransactionData);
         }
-      }, 10000);
+      }, 20000);
 
       setTimeout(() => {
         clearInterval(intervalId);
