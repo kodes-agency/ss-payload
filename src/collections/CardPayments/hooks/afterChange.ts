@@ -13,7 +13,6 @@ export const afterChange: CollectionAfterChangeHook = async ({
     try {
       validateOrderData(doc);
       await checkAndUpdateTransaction(req, doc);
-      console.log("Order created");
       return doc;
     }
     catch (error) {
