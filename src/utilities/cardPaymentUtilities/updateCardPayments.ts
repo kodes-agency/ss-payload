@@ -75,6 +75,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     console.log('Sending order to WooCommerce');
     const order = await WooCommerce.post("orders", orderData);
+    console.log(order)
     console.log('Order created');
     const orderDataResponse: OrderResponse = order.data;
 
