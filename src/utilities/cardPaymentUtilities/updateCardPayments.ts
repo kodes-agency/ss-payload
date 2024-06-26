@@ -75,21 +75,22 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
 
     console.log('Sending order to WooCommerce');
     const order = await WooCommerce.post("orders", orderData);
-    if(order && order.data && order.data.status.includes([400,401,404,500])){
-      const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
-        // Use environment variable for URL
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
-          to: 'denev@kodes.agency',
-          subject: "Възникна грешка при поръчка",
-          body: `Възникна грешка при поръчка. \n Съобщение за грешка: ${order.message} \n Номер поръчка: ${doc.ORDER}`,
-        }),
-      });
-    }
+    console.log(order)
+    // if(order && order.data && order.data.status.includes([400,401,404,500])){
+    //   const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
+    //     // Use environment variable for URL
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
+    //       to: 'denev@kodes.agency',
+    //       subject: "Възникна грешка при поръчка",
+    //       body: `Възникна грешка при поръчка. \n Съобщение за грешка: ${order.message} \n Номер поръчка: ${doc.ORDER}`,
+    //     }),
+    //   });
+    // }
     console.log('Order created');
     const orderDataResponse: OrderResponse = order.data;
 
