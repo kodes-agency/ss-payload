@@ -338,9 +338,9 @@ export const Orders: CollectionConfig = {
                   name: "transaction",
                   label: "Транзакция",
                   relationTo: "payments",
-                  // admin: {
-                  //   readOnly: true,
-                  // },
+                  admin: {
+                    readOnly: true,
+                  },
                 }
               ],
             },
