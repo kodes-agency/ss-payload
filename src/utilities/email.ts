@@ -935,58 +935,58 @@ export async function sendEmail(
         }),
       });
 
-        // const adminEmailRequest2 = await fetch(process.env.EMAIL_API_URL, {
-        //   // Use environment variable for URL
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
-        //     to: "evgeniya.g@santa-sarah.com",
-        //     subject: "Имате нова поръчка с номер: " + orderNumber,
-        //     body: adminTemplate,
-        //   }),
-        // });
+        const adminEmailRequest2 = await fetch(process.env.EMAIL_API_URL, {
+          // Use environment variable for URL
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
+            to: "evgeniya.g@santa-sarah.com",
+            subject: "Имате нова поръчка с номер: " + orderNumber,
+            body: adminTemplate,
+          }),
+        });
 
-        // const adminEmailRequest3 = await fetch(process.env.EMAIL_API_URL, {
-        //     // Use environment variable for URL
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
-        //       to: "genowski@santa-sarah.com",
-        //       subject: "Имате нова поръчка с номер: " + orderNumber,
-        //       body: adminTemplate,
-        //     }),
-        //   });
+        const adminEmailRequest3 = await fetch(process.env.EMAIL_API_URL, {
+            // Use environment variable for URL
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
+              to: "genowski@santa-sarah.com",
+              subject: "Имате нова поръчка с номер: " + orderNumber,
+              body: adminTemplate,
+            }),
+          });
 
-      // const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
-      //   // Use environment variable for URL
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
-      //     to: email,
-      //     subject:
-      //       lang === "bg"
-      //         ? "Вашата поръчка се обработва - Santa Sarah"
-      //         : "Your order is being processed - Santa Sarah",
-      //     body: customerTemplate,
-      //   }),
-      // });
+      const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
+        // Use environment variable for URL
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
+          to: email,
+          subject:
+            lang === "bg"
+              ? "Вашата поръчка се обработва - Santa Sarah"
+              : "Your order is being processed - Santa Sarah",
+          body: customerTemplate,
+        }),
+      });
 
-      // if (!customerEmailRequest.ok || !adminEmailRequest1.ok || !adminEmailRequest2.ok || !adminEmailRequest3.ok) {
-      //   throw new Error(
-      //     `Email API responded with HTTP ${
-      //       customerEmailRequest.status || adminEmailRequest1.status
-      //     }`
-      //   );
-      // }
+      if (!customerEmailRequest.ok || !adminEmailRequest1.ok || !adminEmailRequest2.ok || !adminEmailRequest3.ok) {
+        throw new Error(
+          `Email API responded with HTTP ${
+            customerEmailRequest.status || adminEmailRequest1.status
+          }`
+        );
+      }
 
       console.log("Emails sent successfully");
     }
