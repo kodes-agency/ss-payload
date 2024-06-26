@@ -24,16 +24,12 @@ const WooCommerce = new WooCommerceRestApi({
 // Function to get products from the order data
 async function getProducts(orderData: OrderResponse, req: PayloadRequest) {
   console.log('getProducts function called');
-  const productsPromise = orderData.line_items.map(async (lineItem) => {
-    const productIds = await req.payload.find({
-      collection: "products",
-      where: {
-        productId: { equals: lineItem.product_id },
-      },
-    });
 
+  // Get products from the order data
+  const products = orderData.line_items.map( (lineItem) => {
     return {
-      product: productIds.docs[0].id,
+      // product: productIds.docs[0].id,
+      product: lineItem.product_id.toString(),
       sku: lineItem.sku,
       quantity: lineItem.quantity,
       price: lineItem.price,
@@ -43,7 +39,23 @@ async function getProducts(orderData: OrderResponse, req: PayloadRequest) {
     };
   });
 
-  return await Promise.all(productsPromise);
+  // Get product IDs
+  const productsArrForSearch = products.map((product) => product.product);
+  
+  const productIds = await req.payload.find({
+    collection: "products",
+    where: {
+      productId: { in: productsArrForSearch },
+    },
+  });
+
+  // Insert product Ids into the products array
+  productIds.docs.forEach((product) => {
+    const productIndex = products.findIndex((item) => item.product === product.productId);
+    products[productIndex].product = product.id;
+  })
+
+  return products
 }
 
 // Function to create an order in WooCommerce and Payload CMS
@@ -92,7 +104,7 @@ async function createOrder(doc: Payment, req: PayloadRequest) {
     //   });
     // }
     console.log('Order created');
-    const orderDataResponse: OrderResponse = order.data;
+    const orderDataResponse: OrderResponse = await order.data;
 
     // Get products details
     const products = await getProducts(orderDataResponse, req);
