@@ -114,9 +114,6 @@ export const manageProducts: BeforeOperationHook = async ({
     }
 }
   
-
-
-
   if (operation === "delete") {
     let product = await payload.find({
       collection: "products",

@@ -241,11 +241,11 @@ export const Orders: CollectionConfig = {
               relationTo: "products",
               unique: false,
               required: true,
-              filterOptions: () => {
-                return {
-                  productId: { exists: true }
-                }
-              },
+              // filterOptions: () => {
+              //   return {
+              //     productId: { exists: true }
+              //   }
+              // },
               admin: {
                 width: "40%",
               },

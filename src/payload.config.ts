@@ -68,6 +68,12 @@ export default buildConfig({
   ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
+    transactionOptions: {
+      readConcern: { level: 'majority' },
+      writeConcern: { w: 'majority' },
+      maxCommitTimeMS: 10000,
+      maxTimeMS: 20000,
+    },
   }),
   rateLimit: {
     trustProxy: true,
