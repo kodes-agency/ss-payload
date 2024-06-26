@@ -963,22 +963,22 @@ export async function sendEmail(
         //     }),
         //   });
 
-      const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
-        // Use environment variable for URL
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
-          to: email,
-          subject:
-            lang === "bg"
-              ? "Вашата поръчка се обработва - Santa Sarah"
-              : "Your order is being processed - Santa Sarah",
-          body: customerTemplate,
-        }),
-      });
+      // const customerEmailRequest = await fetch(process.env.EMAIL_API_URL, {
+      //   // Use environment variable for URL
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     from: "Santa Sarah Shop <evgeniya.g@santa-sarah.com>",
+      //     to: email,
+      //     subject:
+      //       lang === "bg"
+      //         ? "Вашата поръчка се обработва - Santa Sarah"
+      //         : "Your order is being processed - Santa Sarah",
+      //     body: customerTemplate,
+      //   }),
+      // });
 
       // if (!customerEmailRequest.ok || !adminEmailRequest1.ok || !adminEmailRequest2.ok || !adminEmailRequest3.ok) {
       //   throw new Error(
